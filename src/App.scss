@@ -1,0 +1,74 @@
+
+@mixin flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body{
+  padding: 0;margin: 0;
+}
+$tile-dark: rgb(20, 20, 20);
+$size: 500px;
+.app{
+  @include flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: rgb(101, 101, 101);
+  .game{
+    display: flex;
+    flex-wrap: wrap;
+    width: $size;
+    height: $size;
+    padding: 1px;
+    background-color: rgba(255, 255, 255, 0.367);
+    box-shadow: 0px 0px 10px 0px black;
+    div{
+      @include flex;
+      flex-direction: column;
+      font-size: 30px;
+      width: 100%;
+      font-family: 'Alegreya Sans SC', sans-serif;
+      }
+    li{
+      @include flex;
+      flex: 20%;
+      margin: 1px;
+      list-style-type: none;
+        div{
+        flex: 20%;
+        @include flex;
+        height: 100%;
+        font-size: 2.5rem;
+        color: white;
+        cursor: grab;
+        user-select: none;
+        transition: all .1s;
+        box-sizing: border-box;
+        border: 3px solid rgb(45, 45, 45);
+        background-color: $tile-dark;
+        &:active{
+          cursor: grabbing;
+          border: 3px solid rgba(0, 91, 147, 0.5);
+        }
+      }
+    }
+    // .victory{
+    //   position: absolute;
+    //   width: $size;
+    //   height: $size;
+    //   background-color: red;
+    // }
+  }
+  button{
+    margin: 20px;
+    padding: 7px 30px;
+    border-radius: 7px;
+    outline: none;
+    font-size: 17px;
+    color: white;
+    cursor: pointer;
+    background-color: $tile-dark;
+    border: 1px solid white;
+  }
+}
