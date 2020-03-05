@@ -53,12 +53,12 @@ $size: 500px;
         }
       }
     }
-    // .victory{
-    //   position: absolute;
-    //   width: $size;
-    //   height: $size;
-    //   background-color: red;
-    // }
+    .victory{
+      position: absolute;
+      width: $size;
+      height: $size;
+      background-color: red;
+    }
   }
   button{
     margin: 20px;
