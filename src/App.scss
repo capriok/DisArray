@@ -4,12 +4,14 @@
   justify-content: center;
   align-items: center;
 }
-
+*{margin: 0;padding: 0;}
 body{
-  padding: 0;margin: 0;
+  text-align: center;
 }
+$game-bg: rgb(204, 204, 204);
 $tile-dark: rgb(20, 20, 20);
 $size: 500px;
+
 .app{
   @include flex;
   flex-direction: column;
@@ -18,10 +20,11 @@ $size: 500px;
   .game{
     display: flex;
     flex-wrap: wrap;
+    overflow: hidden;
     width: $size;
     height: $size;
     padding: 1px;
-    background-color: rgba(255, 255, 255, 0.367);
+    background-color: $game-bg;
     box-shadow: 0px 0px 10px 0px black;
     div{
       @include flex;
@@ -53,11 +56,46 @@ $size: 500px;
         }
       }
     }
-    .victory{
-      position: absolute;
+      @import './src/common/confetti';
+      .victory{
+      overflow: hidden;
       width: $size;
       height: $size;
-      background-color: red;
+      z-index: 100;
+      h2{margin: 15px;}
+      .time{padding-bottom: 15px;}
+      .leaderboard{
+        @include flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        height: 100%;
+        background-color: transparentize($color: darken($game-bg, 5%), $amount: .25);
+          h3{ 
+          width: 100%; 
+          padding: 15px;
+          border: 1px solid black;
+        }
+        p{
+          display: flex;
+          justify-content: space-around;
+          width: 100%;
+          span:nth-child(1){
+            border-right: 1px solid black;
+            flex: .4;
+          }
+          span:nth-child(2){
+            border-right: 1px solid black;
+          }
+          span{
+            flex: 1;
+            text-align: left;
+            width: 50%;
+            padding: 5px;
+            padding-left: 20px;
+            border-bottom: 1px solid black;
+          }
+        }
+      }
     }
   }
   button{

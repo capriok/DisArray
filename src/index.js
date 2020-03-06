@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import _ from 'lodash'
 import logo from './gallery/logo.png'
 import './App.scss';
+import './common/confetti.scss'
+import { Confetti } from './common/confetti';
 
 function Game({ tiles, setTiles, victory, hasWon, playing, checkForWin }) {
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
@@ -76,19 +78,61 @@ function Game({ tiles, setTiles, victory, hasWon, playing, checkForWin }) {
     step1.splice(i - 1, 0, 16)
     let step2 = step1.filter(t => t !== tile)
     step2.splice(emptyIndex - 1, 0, tile)
-
-    console.log(`--Action Tile moved ${side}`)
+    console.log(`--Tile moved ${side}`)
     const newTiles = step2
     setTiles(newTiles)
-    // checkForWin(step2)
+    checkForWin(newTiles)
   }
 
+  const users = [
+    {
+      name: 'kyle',
+      time: ':17'
+    },
+    {
+      name: 'sarah',
+      time: '2:25'
+    },
+    {
+      name: 'cat',
+      time: '2:55'
+    },
+    {
+      name: 'hunter',
+      time: '6:29'
+    },
+    {
+      name: 'fox',
+      time: 'DNF'
+    },
+  ]
 
+  let time = '3:50'
 
   return (
     <>
       <div className="game">
-        {victory && <div className="victory"><h1>You've Won!</h1></div>}
+        {victory &&
+          <>
+            <div className="victory">
+              <h2>You've Won!</h2>
+              <p className="time">Youre time: {time}</p>
+              <div className="leaderboard">
+                <h3>Leaderboards</h3>
+                {users.map((row, i) => (
+                  <>
+                    <p>
+                      <span>{i + 1}</span>
+                      <span>{row.name}</span>
+                      <span>{row.time}</span>
+                    </p>
+                  </>
+                ))}
+              </div>
+            </div>
+            <Confetti />
+          </>
+        }
         {!playing
           ? <><div><img src={logo} alt="" /><h1>disArray</h1></div></>
           : tiles.map((tile, i) => (
@@ -101,13 +145,13 @@ function Game({ tiles, setTiles, victory, hasWon, playing, checkForWin }) {
           ))}
       </div>
     </>
-  );
+  )
 }
 
 export default function Board() {
   const spaces = 16
   const [playing, inSession] = useState(false)
-  const [victory, hasWon] = useState(false)
+  const [victory, hasWon] = useState(true)
   const [tiles, setTiles] = useState([])
 
   const startGame = () => {
@@ -118,36 +162,33 @@ export default function Board() {
     population.splice(spaces, 0, 16)
 
     setTiles(_.shuffle(population))
-    // setTiles(population)
+    setTiles(population)
     hasWon(false)
     inSession(true)
   }
 
   const checkForWin = (arr) => {
-    console.log('checking for win... ');
-    console.log(arr);
-
-    for (let i = 0; i < arr.length; i++) {
-      console.log(i);
-      console.log(i + 1);
-      if (arr[i] > arr[i + 1]) {
+    console.log('Checking for win... ');
+    for (let i = 1; i < arr.length - 1; i++) {
+      if (arr[i + 1] === arr[i] + 1) {
+        endGame()
+      } else {
         hasWon(false)
-      } else { hasWon(true) }
-      console.log(victory);
-
+        console.log('--Tiles in order?', victory);
+        break;
+      }
     }
-    console.log('victory?', victory);
   }
 
-  useEffect(() => checkForWin(tiles), [tiles])
-
-  useEffect(() => startGame(), [])
+  const endGame = () => {
+    hasWon(true)
+  }
 
   return (
     <>
       <div className="app">
         <Game tiles={tiles} setTiles={setTiles} victory={victory} hasWon={hasWon} playing={playing} checkForWin={checkForWin} />
-        <button onClick={() => startGame()}>{playing ? 'Shuffle' : 'Start Game'}</button>
+        <button onClick={() => startGame()}>{!victory ? 'Shuffle' : 'Scramble Tiles'}</button>
       </div>
     </>
   );
