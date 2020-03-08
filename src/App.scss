@@ -71,13 +71,6 @@ body{
     font-family: 'Alegreya Sans SC', sans-serif;
     font-size: 30px;
     user-select: none;
-    .help{
-      position: absolute;
-      bottom: 10px;
-      font-style: italic;
-      padding-top: 20px;
-      font-size: 20px;
-    }
   }
   @import './src/common/confetti';
   .post-game{
@@ -116,7 +109,6 @@ body{
         padding-bottom: 5px;
         border-bottom: 2px solid black;
       }
-      @import './src/common/loading';
       .entries{
         display: flex;
         justify-content: space-around;
@@ -134,8 +126,38 @@ body{
         }
       }
     }
+    @import './src/common/loading';
   }
-  .cta{cursor: pointer;}
+  .help-button{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 10px 20px;
+    cursor: help;
+    &:hover{
+      color: white;
+    }
+  }
+  #help{
+    position: absolute;
+    bottom: 20px;
+    color: white;
+    font-style: italic;
+    font-size: 17px;
+    transition: all .5s;
+  }
+  #nickname{
+    color: black;
+    text-align: center;
+    outline: none;
+    border:none;
+    padding: 3px;
+    padding:  5px 20px;
+    font-family: 'roboto', sans-serif;
+    border-bottom: 2px solid black;
+    background-color: transparent;
+    &::placeholder{color: rgba(0, 0, 0, 1);text-align: center;}
+  }
   button{
     margin: 20px;
     padding: 7px 30px;
@@ -145,9 +167,11 @@ body{
     color: white;
     background-color: $tile-dark;
     border: 1px solid white;
-    .timer{
+    
+    .clock{
       cursor: default;
-      font-size: 20px;
+      font-size: 40px;
     }
   }
+.cta{cursor: pointer;}
 }

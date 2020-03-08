@@ -1,14 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash'
+import axios from 'axios'
 import './App.scss';
 import './common/confetti.scss'
 import logo from './gallery/logo.png'
 import format from './common/format'
 import Leaderboard from './common/leaderboard'
-import axios from 'axios'
 
-function Game({ tiles, setTiles, victory, hasWon, playing, checkForWin }) {
+export default function Board() {
+
+  console.log = function () { }
+  let DOMnickname = document.getElementById('nickname')
+  let DOMhelp = document.getElementById('help')
+  const spaces = 16
+  const [helpShowing, showHelp] = useState(false)
+  const [name, setName] = useState('')
+  const [playing, inSession] = useState(false)
+  const [victory, hasWon] = useState(false)
+  const [tiles, setTiles] = useState([])
+  const [time, setTime] = useState();
+  const [hr, setHr] = useState(0);
+  const [min, setMin] = useState(0);
+  const [sec, setSec] = useState(0);
+
+  const [isSent, setisSent] = useState(false)
+
+  const startGame = () => {
+    if (!name) {
+      try {
+        console.log(DOMnickname);
+        DOMnickname.style.borderBottom = "2px solid red"
+      } catch (error) {
+        console.log(error);
+      }
+      return
+    }
+    let population = []
+    for (let i = 1; i < spaces; i++) {
+      population.push(i)
+    }
+    population.splice(spaces, 0, 16)
+    setTiles(_.shuffle(population))
+    // setTiles(population)
+    setHr(0)
+    setMin(0)
+    setSec(0)
+    toggleHelp()
+    hasWon(false)
+    inSession(true)
+  }
+
+  const checkForWin = (arr) => {
+    let inOrder = false
+    console.log('Checking for win...');
+    for (let i = 1; i < arr.length - 1; i++) {
+      if (arr[i + 1] === arr[i] + 1) {
+        inOrder = true
+      } else {
+        inOrder = false
+        break;
+      }
+    }
+    console.log('--Tiles in order?', inOrder);
+    inOrder && endGame()
+  }
+
+  const endGame = () => {
+    console.log(clock)
+    console.log(name)
+    hasWon(true)
+    inSession(false)
+    const URL = 'https://k-server.netlify.com/.netlify/functions/server/create'
+    const postToLeaderboard = async (name, time) => {
+      await axios.post(URL, {
+        name: name,
+        time: clock
+      }, { "Access-control-allow-origin": "*" })
+        .then(res => {
+          console.log(res)
+          setisSent(true)
+        })
+        .catch(e => console.log(e))
+    }
+    postToLeaderboard(name, clock)
+  }
+
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
 
   const playerAction = (e, i, tile) => {
@@ -86,83 +163,41 @@ function Game({ tiles, setTiles, victory, hasWon, playing, checkForWin }) {
     checkForWin(newTiles)
   }
 
-  return (
-    <>
-      <div className="game">
-        {victory && <Leaderboard />}
-        {!playing && <> <div className="greeting">
-          <img draggable={false} src={logo} alt="" />
-          <h1>disArray</h1>
-          <p className="help">Sort the tiles in ascedning order to win.</p>
-        </div></>}
-        {tiles.map((tile, i) => (
-          <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}>
-            <div key={i}>{tile <= 15 ? tile : ''}</div>
-          </li>
-        ))}
-      </div>
-    </>
+  const toggleHelp = () => {
+    console.log('fired');
+    showHelp(true)
+    setTimeout(() => {
+      showHelp(false)
+    }, 5000)
+  }
+
+  const setNickname = (e) => {
+    try {
+      setName(e.target.value)
+      DOMnickname.style.borderBottom = "2px solid white"
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const clock = `${format(hr)}:${format(min)}:${format(sec)}`
+  const Clock = () => (
+    hr > 0
+      ? `${format(hr)}:${format(min)}:${format(sec)}`
+      : `${format(min)}:${format(sec)}`
   )
-}
-
-export default function Board() {
-  const spaces = 16
-  const [playing, inSession] = useState(false)
-  const [victory, hasWon] = useState(true)
-  const [tiles, setTiles] = useState([])
-  const [time, setTime] = useState();
-  const [min, setMin] = useState(0);
-  const [sec, setSec] = useState(0);
-
-  const startGame = () => {
-    let population = []
-    for (let i = 1; i < spaces; i++) {
-      population.push(i)
-    }
-    population.splice(spaces, 0, 16)
-    setTiles(_.shuffle(population))
-    setTiles(population)
-    setMin(0)
-    setSec(0)
-    hasWon(false)
-    inSession(true)
-  }
-
-  const checkForWin = (arr) => {
-    console.log('Checking for win...');
-    for (let i = 1; i < arr.length - 1; i++) {
-      console.log(arr[i + 1]);
-      console.log(arr[i] + 1);
-
-      if (arr[i + 1] === arr[i] + 1) {
-        hasWon(true)
-        console.log('--Tiles in order?', victory);
-        endGame()
-      } else {
-        hasWon(false)
-        console.log('--Tiles in order?', victory);
-        break;
-      }
-    }
-  }
-
-  const endGame = () => {
-    console.log(clock)
-    const postToLeaderboard = (name, time) => {
-    }
-    postToLeaderboard('name', 'time')
-  }
-
-  const clock = `${format(min)}:${format(sec)}`
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const date = new Date()
-      setSec(sec + 1)
-      if (sec >= 59) {
+      setTime(new Date().toLocaleTimeString());
+      playing && setSec(sec + 1)
+      if (sec === 59) {
         setSec(0)
         setMin(min + 1)
       }
-      setTime(date.toLocaleTimeString());
+      if (min === 59 && sec === 59) {
+        setMin(0)
+        setHr(hr + 1)
+      }
     }, 1000);
     return () => {
       clearTimeout(timeout);
@@ -172,9 +207,41 @@ export default function Board() {
   return (
     <>
       <div className="app">
-        {(playing && !victory) && <button><div className="timer">{clock}</div></button>}
-        <Game tiles={tiles} setTiles={setTiles} victory={victory} hasWon={hasWon} playing={playing} checkForWin={checkForWin} />
-        <button className="cta" onClick={() => startGame()}>{!victory ? 'Shuffle' : 'Scramble Tiles'}</button>
+        {(playing && !victory) &&
+          <button>
+            <Clock className="clock" />
+          </button>
+        }
+        <div className="game">
+          {victory && <Leaderboard time={time} isSent={isSent} />}
+          {!playing &&
+            <div className="greeting">
+              <img draggable={false} src={logo} alt="" />
+              <h1>DisArray</h1>
+              <form autoComplete="off">
+                <input
+                  id="nickname" placeholder="Enter a Nickname"
+                  autoFocus={true} maxLength={8} value={name}
+                  onChange={e => setNickname(e)}
+                />
+              </form>
+            </div>
+          }
+          {tiles.map((tile, i) => (
+            <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}>
+              <div key={i}>{tile <= 15 ? tile : ''}</div>
+            </li>
+          ))}
+        </div>
+        <button className="cta" onClick={() => startGame()}>
+          {!playing ? 'Start Game' : 'Scramble Tiles'}
+        </button>
+        {helpShowing &&
+          <p id="help">Sort the tiles in ascending order to win.</p>
+        }
+        <div className="help-button" onClick={() => toggleHelp()}>
+          <h1>?</h1>
+        </div>
       </div>
     </>
   );
