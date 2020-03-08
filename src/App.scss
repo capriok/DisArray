@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:100,300,400,500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
 
 @mixin flex {
   display: flex;
@@ -5,16 +8,25 @@
   align-items: center;
 }
 *{margin: 0;padding: 0;}
+
+h1, h2, h3, h4, h5, h6{
+  font-family: 'Alegreya Sans SC', sans-serif;
+}
+p, span{
+  font-family: 'roboto', sans-serif;
+  font-size: 1.1rem;
+}
 body{
   text-align: center;
 }
-$game-bg: rgb(204, 204, 204);
-$tile-dark: rgb(20, 20, 20);
-$size: 500px;
+  $game-bg: rgb(204, 204, 204);
+  $tile-dark: rgb(20, 20, 20);
+  $size: 500px;
 
 .app{
   @include flex;
   flex-direction: column;
+  width: 100vw;
   height: 100vh;
   background-color: rgb(101, 101, 101);
   .game{
@@ -26,29 +38,23 @@ $size: 500px;
     padding: 1px;
     background-color: $game-bg;
     box-shadow: 0px 0px 10px 0px black;
-    div{
-      @include flex;
-      flex-direction: column;
-      font-size: 30px;
-      width: 100%;
-      font-family: 'Alegreya Sans SC', sans-serif;
-      }
-    li{
+    .tile{
       @include flex;
       flex: 20%;
       margin: 1px;
       list-style-type: none;
-        div{
+      div{
         flex: 20%;
         @include flex;
         height: 100%;
-        font-size: 2.5rem;
+        font-size: 2.3rem;
         color: white;
         cursor: grab;
         user-select: none;
         transition: all .1s;
         box-sizing: border-box;
         border: 3px solid rgb(45, 45, 45);
+        font-family: 'roboto', sans-serif;
         background-color: $tile-dark;
         &:active{
           cursor: grabbing;
@@ -56,48 +62,80 @@ $size: 500px;
         }
       }
     }
-      @import './src/common/confetti';
-      .victory{
-      overflow: hidden;
-      width: $size;
-      height: $size;
-      z-index: 100;
-      h2{margin: 15px;}
-      .time{padding-bottom: 15px;}
-      .leaderboard{
-        @include flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        height: 100%;
-        background-color: transparentize($color: darken($game-bg, 5%), $amount: .25);
-          h3{ 
-          width: 100%; 
-          padding: 15px;
-          border: 1px solid black;
+  }
+  .greeting{
+    position: relative;
+    @include flex;
+    flex-direction: column;
+    width: 100%;
+    font-family: 'Alegreya Sans SC', sans-serif;
+    font-size: 30px;
+    user-select: none;
+    .help{
+      position: absolute;
+      bottom: 10px;
+      font-style: italic;
+      padding-top: 20px;
+      font-size: 20px;
+    }
+  }
+  @import './src/common/confetti';
+  .post-game{
+    overflow: hidden;
+    width: $size;
+    height: $size;
+    z-index: 100;
+    .head{
+      margin: 10px;
+    }
+    .leaderboard{
+      @include flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      width: 100%;;
+      height: 100%;
+      background-color: transparentize($color: darken($game-bg, 10%), $amount: .17);
+      border-top: 1px solid black;
+      h1{ 
+        width: 100%; 
+        padding: 10px;
+      }
+      .titles{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        span:nth-child(1){
+          flex: .8;
         }
-        p{
-          display: flex;
-          justify-content: space-around;
-          width: 100%;
-          span:nth-child(1){
-            border-right: 1px solid black;
-            flex: .4;
-          }
-          span:nth-child(2){
-            border-right: 1px solid black;
-          }
-          span{
-            flex: 1;
-            text-align: left;
-            width: 50%;
-            padding: 5px;
-            padding-left: 20px;
-            border-bottom: 1px solid black;
-          }
+      }
+      span{
+        flex: 1;
+        text-align: left;
+        padding-left: 20px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid black;
+      }
+      @import './src/common/loading';
+      .entries{
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        span:nth-child(1){
+          flex: .8;
+        }
+        span{
+          flex: 1;
+          text-align: left;
+          width: 50%;
+          padding: 5px;
+          padding-left: 20px;
+          border-bottom: 1px solid black;
         }
       }
     }
   }
+  .cta{cursor: pointer;}
   button{
     margin: 20px;
     padding: 7px 30px;
@@ -105,8 +143,11 @@ $size: 500px;
     outline: none;
     font-size: 17px;
     color: white;
-    cursor: pointer;
     background-color: $tile-dark;
     border: 1px solid white;
+    .timer{
+      cursor: default;
+      font-size: 20px;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import React from 'react'
-export const Confetti = () => (
+
+const Confetti = () => (
   <div className="confetti">
     <div className="confetti-piece"></div>
     <div className="confetti-piece"></div>
@@ -16,3 +17,5 @@ export const Confetti = () => (
     <div className="confetti-piece"></div>
   </div>
 )
+
+export default Confetti

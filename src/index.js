@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash'
-import logo from './gallery/logo.png'
 import './App.scss';
 import './common/confetti.scss'
-import { Confetti } from './common/confetti';
+import logo from './gallery/logo.png'
+import format from './common/format'
+import Leaderboard from './common/leaderboard'
+import axios from 'axios'
 
 function Game({ tiles, setTiles, victory, hasWon, playing, checkForWin }) {
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
@@ -84,65 +86,20 @@ function Game({ tiles, setTiles, victory, hasWon, playing, checkForWin }) {
     checkForWin(newTiles)
   }
 
-  const users = [
-    {
-      name: 'kyle',
-      time: ':17'
-    },
-    {
-      name: 'sarah',
-      time: '2:25'
-    },
-    {
-      name: 'cat',
-      time: '2:55'
-    },
-    {
-      name: 'hunter',
-      time: '6:29'
-    },
-    {
-      name: 'fox',
-      time: 'DNF'
-    },
-  ]
-
-  let time = '3:50'
-
   return (
     <>
       <div className="game">
-        {victory &&
-          <>
-            <div className="victory">
-              <h2>You've Won!</h2>
-              <p className="time">Youre time: {time}</p>
-              <div className="leaderboard">
-                <h3>Leaderboards</h3>
-                {users.map((row, i) => (
-                  <>
-                    <p>
-                      <span>{i + 1}</span>
-                      <span>{row.name}</span>
-                      <span>{row.time}</span>
-                    </p>
-                  </>
-                ))}
-              </div>
-            </div>
-            <Confetti />
-          </>
-        }
-        {!playing
-          ? <><div><img src={logo} alt="" /><h1>disArray</h1></div></>
-          : tiles.map((tile, i) => (
-            <li key={i} onClick={(e) => playerAction(e, i + 1, tile)}>
-              <div key={i}
-              >
-                {tile <= 15 ? tile : ''}
-              </div>
-            </li>
-          ))}
+        {victory && <Leaderboard />}
+        {!playing && <> <div className="greeting">
+          <img draggable={false} src={logo} alt="" />
+          <h1>disArray</h1>
+          <p className="help">Sort the tiles in ascedning order to win.</p>
+        </div></>}
+        {tiles.map((tile, i) => (
+          <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}>
+            <div key={i}>{tile <= 15 ? tile : ''}</div>
+          </li>
+        ))}
       </div>
     </>
   )
@@ -153,6 +110,9 @@ export default function Board() {
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(true)
   const [tiles, setTiles] = useState([])
+  const [time, setTime] = useState();
+  const [min, setMin] = useState(0);
+  const [sec, setSec] = useState(0);
 
   const startGame = () => {
     let population = []
@@ -160,17 +120,23 @@ export default function Board() {
       population.push(i)
     }
     population.splice(spaces, 0, 16)
-
     setTiles(_.shuffle(population))
     setTiles(population)
+    setMin(0)
+    setSec(0)
     hasWon(false)
     inSession(true)
   }
 
   const checkForWin = (arr) => {
-    console.log('Checking for win... ');
+    console.log('Checking for win...');
     for (let i = 1; i < arr.length - 1; i++) {
+      console.log(arr[i + 1]);
+      console.log(arr[i] + 1);
+
       if (arr[i + 1] === arr[i] + 1) {
+        hasWon(true)
+        console.log('--Tiles in order?', victory);
         endGame()
       } else {
         hasWon(false)
@@ -181,19 +147,37 @@ export default function Board() {
   }
 
   const endGame = () => {
-    hasWon(true)
+    console.log(clock)
+    const postToLeaderboard = (name, time) => {
+    }
+    postToLeaderboard('name', 'time')
   }
+
+  const clock = `${format(min)}:${format(sec)}`
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const date = new Date()
+      setSec(sec + 1)
+      if (sec >= 59) {
+        setSec(0)
+        setMin(min + 1)
+      }
+      setTime(date.toLocaleTimeString());
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    }
+  }, [time, sec, min]);
 
   return (
     <>
       <div className="app">
+        {(playing && !victory) && <button><div className="timer">{clock}</div></button>}
         <Game tiles={tiles} setTiles={setTiles} victory={victory} hasWon={hasWon} playing={playing} checkForWin={checkForWin} />
-        <button onClick={() => startGame()}>{!victory ? 'Shuffle' : 'Scramble Tiles'}</button>
+        <button className="cta" onClick={() => startGame()}>{!victory ? 'Shuffle' : 'Scramble Tiles'}</button>
       </div>
     </>
   );
 }
-
-
 
 ReactDOM.render(<Board />, document.getElementById('root'));
