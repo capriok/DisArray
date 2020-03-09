@@ -133,9 +133,12 @@ body{
     left: 0;
     bottom: 0;
     padding: 10px 20px;
+    color: white;
     cursor: help;
+    transition: all .3s;
     &:hover{
-      color: white;
+      bottom: 5px;
+      font-size: 1.2rem;
     }
   }
   #help{
@@ -144,7 +147,6 @@ body{
     color: white;
     font-style: italic;
     font-size: 17px;
-    transition: all .5s;
   }
   #nickname{
     color: black;

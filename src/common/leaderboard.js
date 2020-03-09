@@ -3,7 +3,7 @@ import Confetti from './confetti';
 import Loading from './loading';
 import axios from 'axios'
 
-export default function Leaderboard({ time, isSent }) {
+export default function Leaderboard({ time, entryPopReady }) {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -20,8 +20,8 @@ export default function Leaderboard({ time, isSent }) {
         })
         .catch(e => console.log(e))
     }
-    isSent && populate()
-  }, [isSent])
+    entryPopReady && populate()
+  }, [entryPopReady])
 
   return (
     <>

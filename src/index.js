@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+// import { useSpring, animated } from 'react-spring'
+// import { Spring } from 'react-spring/renderprops'
+import { Transition } from 'react-spring/renderprops'
 import _ from 'lodash'
 import axios from 'axios'
 import './App.scss';
@@ -9,22 +12,22 @@ import format from './common/format'
 import Leaderboard from './common/leaderboard'
 
 export default function Board() {
-
   // console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
-  let DOMhelp = document.getElementById('help')
   const spaces = 16
   const [helpShowing, showHelp] = useState(false)
   const [name, setName] = useState('')
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
+  const [entryPopReady, entrySent] = useState(false)
   const [tiles, setTiles] = useState([])
   const [time, setTime] = useState();
   const [hr, setHr] = useState(0);
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
 
-  const [isSent, setisSent] = useState(false)
+  let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
+  const clock = `${format(hr)}:${format(min)}:${format(sec)}`
 
   const startGame = () => {
     if (!name) {
@@ -42,7 +45,7 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    setTiles(population)
+    // setTiles(population)
     setHr(0)
     setMin(0)
     setSec(0)
@@ -77,14 +80,12 @@ export default function Board() {
       }, { "Access-control-allow-origin": "*" })
         .then(res => {
           console.log('Ranking Sent =>', name, '/', time)
-          setisSent(true)
+          entrySent(true)
         })
         .catch(e => console.log(e))
     }
     postToLeaderboard(name, clock)
   }
-
-  let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
 
   const playerAction = (e, i, tile) => {
     console.log("---------User Clicked--------");
@@ -162,7 +163,6 @@ export default function Board() {
   }
 
   const toggleHelp = () => {
-    console.log('fired');
     showHelp(true)
     setTimeout(() => {
       showHelp(false)
@@ -172,18 +172,12 @@ export default function Board() {
   const setNickname = (e) => {
     try {
       setName(e.target.value)
-      DOMnickname.style.borderBottom = "2px solid white"
+      DOMnickname.style.borderBottom = "2px solid black"
     } catch (error) {
       console.log(error);
     }
   }
 
-  const clock = `${format(hr)}:${format(min)}:${format(sec)}`
-  const Clock = () => (
-    hr > 0
-      ? `${format(hr)}:${format(min)}:${format(sec)}`
-      : `${format(min)}:${format(sec)}`
-  )
   useEffect(() => {
     const timeout = setTimeout(() => {
       setTime(new Date().toLocaleTimeString());
@@ -202,6 +196,12 @@ export default function Board() {
     }
   }, [time, sec, min]);
 
+  const Clock = () => (
+    hr > 0
+      ? `${format(hr)}:${format(min)}:${format(sec)}`
+      : `${format(min)}:${format(sec)}`
+  )
+
   return (
     <>
       <div className="app">
@@ -211,12 +211,12 @@ export default function Board() {
           </button>
         }
         <div className="game">
-          {victory && <Leaderboard time={time} isSent={isSent} />}
+          {victory && <Leaderboard time={time} entryPopReady={entryPopReady} />}
           {(!playing && !victory) &&
             < div className="greeting">
               <img draggable={false} src={logo} alt="" />
               <h1>DisArray</h1>
-              <form autoComplete="off">
+              <form autoComplete="off" onSubmit={e => e.preventDefault()}>
                 <input
                   id="nickname" placeholder="Enter a Nickname"
                   autoFocus={true} maxLength={8} value={name}
@@ -234,9 +234,22 @@ export default function Board() {
         <button className="cta" onClick={() => startGame()}>
           {!playing ? 'Start Game' : 'Scramble Tiles'}
         </button>
-        {helpShowing &&
-          <p id="help">Sort the tiles in ascending order to win.</p>
-        }
+        {/* {helpShowing &&
+          <Spring
+            from={{ opacity: 0 }}
+            to={{ opacity: 1 }}
+            config={{ duration: 500 }}>
+            {props => <p style={props} id="help" > Sort the tiles in ascending order to win.</p>
+            }
+          </Spring>
+        } */}
+        <Transition
+          items={helpShowing}
+          from={{ opacity: 0 }}
+          enter={{ opacity: 1 }}
+          leave={{ opacity: 0 }}>
+          {helpShowing => helpShowing && (props => <p style={props} id="help" > Sort the tiles in ascending order to win.</p>)}
+        </Transition>
         <div className="help-button" onClick={() => toggleHelp()}>
           <h1>?</h1>
         </div>
