@@ -45,7 +45,7 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    setTiles(population)
+    //setTiles(population)
     setHr(0)
     setMin(0)
     setSec(0)
