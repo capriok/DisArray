@@ -13,26 +13,21 @@ import format from './common/format'
 import Leaderboard from './common/leaderboard'
 
 export default function Board() {
-  console.log = function () { }
+  // console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
   const spaces = 16
   const [helpShowing, showHelp] = useState(false)
-  const [leaderboardOpen, openLeaderboard] = useState()
+  const [leaderboardOpen, openLeaderboard] = useState(false)
   const [name, setName] = useState('')
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
-  const [entryPopReady, entrySent] = useState(false)
   const [tiles, setTiles] = useState([])
+  const [leaderboardReady, entrySent] = useState(false)
   const [time, setTime] = useState();
-  const [hr, setHr] = useState(0);
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
 
-  // make end game set leaderboardopen true sintead of relying on playing and victory
-  // use victory for /create entry for db
-
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
-  const clock = `${format(hr)}:${format(min)}:${format(sec)}`
 
   const startGame = () => {
     if (!name) {
@@ -51,7 +46,6 @@ export default function Board() {
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
     //setTiles(population)
-    setHr(0)
     setMin(0)
     setSec(0)
     !playing && toggleHelp()
@@ -197,32 +191,24 @@ export default function Board() {
         setSec(0)
         setMin(min + 1)
       }
-      if (min === 59 && sec === 59) {
-        setMin(0)
-        setHr(hr + 1)
-      }
     }, 1000);
     return () => {
       clearTimeout(timeout);
     }
   }, [time, sec, min]);
 
-  const Clock = () => (
-    hr > 0
-      ? `${format(hr)}:${format(min)}:${format(sec)}`
-      : `${format(min)}:${format(sec)}`
-  )
+  const clock = `${format(min)}:${format(sec)}`
 
   return (
     <>
       <div className="app">
         {(playing && !victory) &&
           <button>
-            <Clock className="clock" />
+            {clock}
           </button>
         }
         <div className="game">
-          {leaderboardOpen && <Leaderboard victory={victory} time={clock} entryPopReady={entryPopReady} />}
+          {leaderboardOpen && <Leaderboard victory={victory} time={clock} leaderboardReady={leaderboardReady} />}
           {(!playing && !victory) &&
             < div className="greeting">
               <img draggable={false} src={logo} alt="" />

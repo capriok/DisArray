@@ -3,7 +3,7 @@ import Confetti from './confetti';
 import Loading from './loading';
 import axios from 'axios'
 
-export default function Leaderboard({ time, entryPopReady, victory }) {
+export default function Leaderboard({ time, leaderboardReady, victory }) {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -14,14 +14,16 @@ export default function Leaderboard({ time, entryPopReady, victory }) {
       console.log('--Fetching leaderboard entries');
       await axios.get(URL, { "Access-control-allow-origin": "*" })
         .then(res => {
-          console.log(res)
+          console.log(res.data)
+          // sorting logic here?
+          console.log(res.data)
           setEntries(res.data)
           setLoading(false)
         })
         .catch(e => console.log(e))
     }
-    entryPopReady && populate()
-  }, [entryPopReady])
+    leaderboardReady && populate()
+  }, [leaderboardReady])
 
   return (
     <>
