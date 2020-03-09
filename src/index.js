@@ -13,7 +13,7 @@ import format from './common/format'
 import Leaderboard from './common/leaderboard'
 
 export default function Board() {
-  // console.log = function () { }
+  console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
   const spaces = 16
   const [helpShowing, showHelp] = useState(false)
@@ -245,15 +245,6 @@ export default function Board() {
         <button className="cta" onClick={() => startGame()}>
           {!playing ? 'Start Game' : 'Scramble Tiles'}
         </button>
-        {/* {helpShowing &&
-          <Spring
-            from={{ opacity: 0 }}
-            to={{ opacity: 1 }}
-            config={{ duration: 500 }}>
-            {props => <p style={props} id="help" > Sort the tiles in ascending order to win.</p>
-            }
-          </Spring>
-        } */}
         <Transition
           items={helpShowing}
           from={{ opacity: 0 }}
