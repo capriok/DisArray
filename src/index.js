@@ -23,8 +23,8 @@ export default function Board() {
   const [tiles, setTiles] = useState([])
   const [time, setTime] = useState();
   const [hr, setHr] = useState(0);
-  const [min, setMin] = useState(0);
-  const [sec, setSec] = useState(0);
+  const [min, setMin] = useState(5);
+  const [sec, setSec] = useState(17);
 
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
   const clock = `${format(hr)}:${format(min)}:${format(sec)}`
@@ -45,11 +45,9 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    // setTiles(population)
+    setTiles(population)
     setHr(0)
-    setMin(0)
-    setSec(0)
-    toggleHelp()
+    !playing && toggleHelp()
     hasWon(false)
     inSession(true)
   }
