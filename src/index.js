@@ -8,6 +8,7 @@ import axios from 'axios'
 import './App.scss';
 import './common/confetti.scss'
 import logo from './gallery/logo.png'
+import lbIcon from './gallery/lb-icon.png'
 import format from './common/format'
 import Leaderboard from './common/leaderboard'
 
@@ -16,6 +17,7 @@ export default function Board() {
   let DOMnickname = document.getElementById('nickname')
   const spaces = 16
   const [helpShowing, showHelp] = useState(false)
+  const [leaderboardOpen, openLeaderboard] = useState()
   const [name, setName] = useState('')
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
@@ -25,6 +27,9 @@ export default function Board() {
   const [hr, setHr] = useState(0);
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
+
+  // make end game set leaderboardopen true sintead of relying on playing and victory
+  // use victory for /create entry for db
 
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
   const clock = `${format(hr)}:${format(min)}:${format(sec)}`
@@ -85,6 +90,7 @@ export default function Board() {
         .catch(e => console.log(e))
     }
     postToLeaderboard(name, clock)
+    openLeaderboard(true)
   }
 
   const playerAction = (e, i, tile) => {
@@ -169,6 +175,11 @@ export default function Board() {
     }, 5000)
   }
 
+  const toggleLB = () => {
+    openLeaderboard(!leaderboardOpen)
+    entrySent(true)
+  }
+
   const setNickname = (e) => {
     try {
       setName(e.target.value)
@@ -211,7 +222,7 @@ export default function Board() {
           </button>
         }
         <div className="game">
-          {victory && <Leaderboard time={time} entryPopReady={entryPopReady} />}
+          {leaderboardOpen && <Leaderboard victory={victory} time={clock} entryPopReady={entryPopReady} />}
           {(!playing && !victory) &&
             < div className="greeting">
               <img draggable={false} src={logo} alt="" />
@@ -252,6 +263,9 @@ export default function Board() {
         </Transition>
         <div className="help-button" onClick={() => toggleHelp()}>
           <h1>?</h1>
+        </div>
+        <div className="lb-button" onClick={() => toggleLB()}>
+          <img src={lbIcon} alt="" />
         </div>
       </div>
     </>
