@@ -10,7 +10,7 @@ import Leaderboard from './common/leaderboard'
 
 export default function Board() {
 
-  console.log = function () { }
+  // console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
   let DOMhelp = document.getElementById('help')
   const spaces = 16
@@ -42,7 +42,7 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    // setTiles(population)
+    setTiles(population)
     setHr(0)
     setMin(0)
     setSec(0)
@@ -67,8 +67,6 @@ export default function Board() {
   }
 
   const endGame = () => {
-    console.log(clock)
-    console.log(name)
     hasWon(true)
     inSession(false)
     const URL = 'https://k-server.netlify.com/.netlify/functions/server/create'
@@ -78,7 +76,7 @@ export default function Board() {
         time: clock
       }, { "Access-control-allow-origin": "*" })
         .then(res => {
-          console.log(res)
+          console.log('Ranking Sent =>', name, '/', time)
           setisSent(true)
         })
         .catch(e => console.log(e))
@@ -214,8 +212,8 @@ export default function Board() {
         }
         <div className="game">
           {victory && <Leaderboard time={time} isSent={isSent} />}
-          {!playing &&
-            <div className="greeting">
+          {(!playing && !victory) &&
+            < div className="greeting">
               <img draggable={false} src={logo} alt="" />
               <h1>DisArray</h1>
               <form autoComplete="off">

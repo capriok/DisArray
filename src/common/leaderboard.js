@@ -38,7 +38,7 @@ export default function Leaderboard({ time, isSent }) {
             <span>Name</span>
             <span>Time</span>
           </div>
-          {!loading && entries.map((row, i) => (
+          {!loading && entries.slice(0, 5).map((row, i) => (
             <div className="entries" key={i}>
               <span>{i + 1}</span>
               <span>{row.name}</span>
