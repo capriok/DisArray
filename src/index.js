@@ -22,8 +22,9 @@ export default function Board() {
       backgroundColor: 'rgb(75, 75, 75)',
     },
     game: {
-      backgroundColor: 'rgb(125, 125, 125)',
-    }
+      backgroundColor: 'rgb(175, 175, 175)',
+    },
+    whiteFont: { color: 'white' }
   }
   const [darkState, setdarkState] = useState(localStorage.getItem('DA-darkState') || false)
   const [theTheme, setTheTheme] = useState({})
@@ -249,7 +250,7 @@ export default function Board() {
           from={{ opacity: 0 }}
           enter={{ opacity: 1 }}
           leave={{ opacity: 0 }}>
-          {helpShowing => helpShowing && (props => <p style={props} id="help" > Sort the tiles in ascending order to win.</p>)}
+          {helpShowing => helpShowing && (props => <p style={props} id="help" style={theTheme.whiteFont}> Sort the tiles in ascending order to win.</p>)}
         </Transition>
         <div className="theme" onClick={() => {
           setdarkState(!darkState)

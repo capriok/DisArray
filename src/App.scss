@@ -20,7 +20,7 @@ body{
   text-align: center;
 }
   $app-bg: rgb(150, 150, 150);
-  $game-bg: rgb(200, 200, 200);
+  $game-bg: rgb(215, 215, 215);
   $tile-dark: rgb(20, 20, 20);
 
 .app{
@@ -181,9 +181,9 @@ body{
   #help{
     position: absolute;
     bottom: 20px;
-    color: white;
+    color:black;
     font-style: italic;
-    font-size: 17px;
+    font-size: 20px;
   }
   #nickname{
     color: black;
