@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-// import { useSpring, animated } from 'react-spring'
-// import { Spring } from 'react-spring/renderprops'
 import { Transition } from 'react-spring/renderprops'
 import _ from 'lodash'
 import axios from 'axios'
@@ -11,11 +9,24 @@ import logo from './gallery/logo.png'
 import lbIcon from './gallery/lb-icon.png'
 import format from './common/format'
 import Leaderboard from './common/leaderboard'
+import nightlight from './gallery/nightlight.png'
+import daylight from './gallery/daylight.png'
 
 export default function Board() {
   // console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
   const spaces = 16
+  const trueDarkState = localStorage.getItem('DA-darkState') === 'true'
+  let theme = {
+    app: {
+      backgroundColor: 'rgb(75, 75, 75)',
+    },
+    game: {
+      backgroundColor: 'rgb(125, 125, 125)',
+    }
+  }
+  const [darkState, setdarkState] = useState(localStorage.getItem('DA-darkState') || false)
+  const [theTheme, setTheTheme] = useState({})
   const [helpShowing, showHelp] = useState(false)
   const [leaderboardOpen, openLeaderboard] = useState(false)
   const [name, setName] = useState('')
@@ -27,6 +38,7 @@ export default function Board() {
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
 
+  useEffect(() => darkState ? setTheTheme(theme) : setTheTheme({}), [darkState])
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
 
   const startGame = () => {
@@ -45,11 +57,12 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    //setTiles(population)
+    // setTiles(population)
     setMin(0)
     setSec(0)
     !playing && toggleHelp()
     hasWon(false)
+    openLeaderboard(false)
     inSession(true)
   }
 
@@ -201,13 +214,13 @@ export default function Board() {
 
   return (
     <>
-      <div className="app">
+      <div className="app" style={theTheme.app}>
         {(playing && !victory) &&
           <button>
             {clock}
           </button>
         }
-        <div className="game">
+        <div className="game" style={theTheme.game}>
           {leaderboardOpen && <Leaderboard victory={victory} time={clock} leaderboardReady={leaderboardReady} />}
           {(!playing && !victory) &&
             < div className="greeting">
@@ -238,6 +251,14 @@ export default function Board() {
           leave={{ opacity: 0 }}>
           {helpShowing => helpShowing && (props => <p style={props} id="help" > Sort the tiles in ascending order to win.</p>)}
         </Transition>
+        <div className="theme" onClick={() => {
+          setdarkState(!darkState)
+          localStorage.setItem('DA-darkState', !darkState)
+        }
+
+        }>
+          <img src={darkState ? nightlight : daylight} alt="" />
+        </div>
         <div className="help-button" onClick={() => toggleHelp()}>
           <h1>?</h1>
         </div>

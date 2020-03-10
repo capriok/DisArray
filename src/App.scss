@@ -19,22 +19,22 @@ p, span{
 body{
   text-align: center;
 }
-  $game-bg: rgb(204, 204, 204);
+  $app-bg: rgb(150, 150, 150);
+  $game-bg: rgb(200, 200, 200);
   $tile-dark: rgb(20, 20, 20);
-  $size: 500px;
 
 .app{
   @include flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  background-color: rgb(101, 101, 101);
+  background-color: $app-bg;
   .game{
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
-    width: $size;
-    height: $size;
+    width: 500px;
+    height: 500px;
     padding: 1px;
     background-color: $game-bg;
     box-shadow: 0px 0px 10px 0px black;
@@ -75,8 +75,8 @@ body{
   @import './src/common/confetti';
   .post-game{
     overflow: hidden;
-    width: $size;
-    height: $size;
+    width: 500px;
+    height: 500px;
     z-index: 100;
     .head{
       border-bottom: 1px solid black;
@@ -87,9 +87,9 @@ body{
       @include flex;
       flex-direction: column;
       justify-content: flex-start;
-      width: 100%;;
+      width: 100%;
       height: 100%;
-      background-color: transparentize($color: darken($game-bg, 10%), $amount: .17);
+      background-color: $game-bg;
       h1{ 
         width: 100%; 
         padding: 15px;
@@ -129,6 +129,23 @@ body{
     }
     @import './src/common/loading';
   }
+  .theme{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: all .3s;
+    img{
+      width: 30px;
+    }
+    &:hover {
+      top: 5px;
+      img{
+      transform: scale(1.2);
+      }
+    }
+  }
   .lb-button{
     position: absolute;
     left: 0;
@@ -139,9 +156,13 @@ body{
     transition: all .3s;
     img{
       width: 25px;
-    }
-    &:hover{
-      bottom: 5px;
+    transition: all .3s;
+  }
+    &:hover {
+      top: 5px;
+      img{
+      transform: scale(1.2);
+      }
     }
   }
   .help-button{
@@ -149,12 +170,12 @@ body{
     left: 0;
     bottom: 0;
     padding: 10px 20px;
-    color: white;
+    color: $tile-dark;
     cursor: help;
     transition: all .3s;
     &:hover{
       bottom: 5px;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
   }
   #help{
@@ -192,4 +213,13 @@ body{
     }
   }
 .cta{cursor: pointer;}
+}
+
+@media (max-width:500px) {
+  .app{
+    .game{
+      height: 98vw;
+      width: 98vw;
+    }
+  }
 }
