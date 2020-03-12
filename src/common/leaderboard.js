@@ -11,12 +11,11 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
 
   useEffect(() => {
     const populate = async () => {
-      console.log('--Fetching leaderboard entries');
+      console.log('--Fetching leaderboard entries')
       await axios.get(URL, { "Access-control-allow-origin": "*" })
         .then(res => {
           console.log(res.data)
-          // sorting logic here?
-          console.log(res.data)
+          res.data.sort((a, b) => a.seconds - b.seconds)
           setEntries(res.data)
           setLoading(false)
         })
@@ -36,13 +35,15 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
           </div>
         }
         <div className="leaderboard">
-          <h1>Leaderboards</h1>
-          <div className="titles">
-            <span>Rank</span>
-            <span>Name</span>
-            <span>Time</span>
+          <div className="head">
+            <h1>Leaderboards</h1>
+            <div className="titles">
+              <span>Rank</span>
+              <span>Name</span>
+              <span>Time</span>
+            </div>
           </div>
-          {!loading && entries.slice(0, 5).map((row, i) => (
+          {!loading && entries.slice(0, 20).map((row, i) => (
             <div className="entries" key={i}>
               <span>{i + 1}</span>
               <span>{row.name}</span>

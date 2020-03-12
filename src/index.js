@@ -19,14 +19,15 @@ export default function Board() {
   const trueDarkState = localStorage.getItem('DA-darkState') === 'true'
   let theme = {
     app: {
-      backgroundColor: 'rgb(75, 75, 75)',
+      backgroundColor: 'rgb(35, 35, 35)',
     },
     game: {
-      backgroundColor: 'rgb(175, 175, 175)',
+      backgroundColor: 'rgb(200, 200, 200)',
     },
-    whiteFont: { color: 'white' }
+    whiteFont: { color: 'white' },
+    invertImage: { filter: 'invert(1)' }
   }
-  const [darkState, setdarkState] = useState(localStorage.getItem('DA-darkState') || false)
+  const [darkState, setdarkState] = useState(trueDarkState)
   const [theTheme, setTheTheme] = useState({})
   const [helpShowing, showHelp] = useState(false)
   const [leaderboardOpen, openLeaderboard] = useState(false)
@@ -36,10 +37,10 @@ export default function Board() {
   const [tiles, setTiles] = useState([])
   const [leaderboardReady, entrySent] = useState(false)
   const [time, setTime] = useState();
-  const [min, setMin] = useState(0);
-  const [sec, setSec] = useState(0);
+  const [min, setMin] = useState(2);
+  const [sec, setSec] = useState(20);
 
-  useEffect(() => darkState ? setTheTheme(theme) : setTheTheme({}), [darkState])
+  useEffect(() => trueDarkState ? setTheTheme(theme) : setTheTheme({}), [darkState, trueDarkState])
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
 
   const startGame = () => {
@@ -86,13 +87,14 @@ export default function Board() {
     hasWon(true)
     inSession(false)
     const URL = 'https://k-server.netlify.com/.netlify/functions/server/create'
-    const postToLeaderboard = async (name, time) => {
+    const postToLeaderboard = async () => {
       await axios.post(URL, {
         name: name,
-        time: clock
+        time: clock,
+        seconds: clockInSeconds()
       }, { "Access-control-allow-origin": "*" })
         .then(res => {
-          console.log('Ranking Sent =>', name, '/', time)
+          console.log('Ranking Sent =>', name, '/', time, '/', clockInSeconds())
           entrySent(true)
         })
         .catch(e => console.log(e))
@@ -212,6 +214,10 @@ export default function Board() {
   }, [time, sec, min]);
 
   const clock = `${format(min)}:${format(sec)}`
+  const clockInSeconds = () => {
+    let secs = (min * 60) + sec
+    return secs
+  }
 
   return (
     <>
@@ -258,13 +264,13 @@ export default function Board() {
         }
 
         }>
-          <img src={darkState ? nightlight : daylight} alt="" />
+          <img style={theTheme.invertImage} src={darkState ? nightlight : daylight} alt="" />
         </div>
         <div className="help-button" onClick={() => toggleHelp()}>
-          <h1>?</h1>
+          <h1 style={theTheme.whiteFont} >?</h1>
         </div>
         <div className="lb-button" onClick={() => toggleLB()}>
-          <img src={lbIcon} alt="" />
+          <img style={theTheme.invertImage} src={lbIcon} alt="" />
         </div>
       </div>
     </>
