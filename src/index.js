@@ -28,7 +28,7 @@ export default function Board() {
   const [theTheme, setTheTheme] = useState({})
   const [helpShowing, showHelp] = useState(false)
   const [leaderboardOpen, openLeaderboard] = useState(false)
-  const [navDrop, setDrop] = useState(false)
+  const [navPop, navPopOpen] = useState(false)
   const [name, setName] = useState('')
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
@@ -220,27 +220,26 @@ export default function Board() {
   return (
     <>
       <div className="app" style={theTheme.app}>
-
         <div className="navbar">
           <h1>Kyle Caprio</h1>
-          <div className="hamburger" onClick={() => setDrop(!navDrop)}><p>☰</p></div>
-          {navDrop &&
+          {navPop &&
             <>
-              <div className="navdrop">
-                <p onClick={() => toggleHelp}>Objective</p>
+              <div className="navpop">
+                <p onClick={() => toggleHelp()}>Objective</p>
                 <p onClick={() => toggleLB()}>Leaderboards</p>
                 <p onClick={() => {
                   setDarkState(!darkState)
                   localStorage.setItem('DA-darkState', !darkState)
-                }}>Dark Mode</p>
+                }}>Theme</p>
               </div>
               <div className="modal-clickout"
-                style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
-                onTouchStart={() => setDrop(!navDrop)}>
+                onTouchStart={() => navPopOpen(!navPop)}>
               </div>
             </>
           }
+          <div className="hamburger" onClick={() => navPopOpen(!navPop)}><p>☰</p></div>
         </div >
+
         {(playing && !victory) &&
           <button>
             {clock}

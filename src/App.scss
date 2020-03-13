@@ -48,18 +48,21 @@ body{
     position: fixed;
     align-items: center;
     top: 0;
+    height: 50px;
     width: 100%;
     max-height: 55px;
     padding: 0px 20px 0px 20px ;
     box-shadow: 0px 3px 15px -5px black;
-    user-select: none;
     font-family: 'Alegreya Sans SC', sans-serif;
     background-color: black;
-    z-index: 1000;
+    user-select: none;
+    overflow: hidden;
+    z-index: 500;
     h1{
-      padding: 20px;
       font-weight: 300;
+      padding: 20px;
       font-size: 1.8rem;
+      justify-content: flex-start;
       color: white;
     }
     .hamburger{
@@ -74,21 +77,23 @@ body{
       }
     }
   }
-  .navdrop{
-    position: fixed;
-    top: 55px;
-    right: 0;
-    padding: 25px;
-    text-align: center;
+  .navpop{
+    position: absolute;
+    right: 75px;
+    top: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    top:0px;
     z-index: 1001;
     box-shadow: 0px 10px 10px -10px black;
-    background-color: black;
     transition: .2s;
     p:nth-child(2){
-      margin: 40px 0px;
-
+      margin: 0px 40px;
     }
     p{
+      margin: 20px;
+      flex:1;
       color:white;
       cursor: pointer;
     }
@@ -205,55 +210,17 @@ body{
     }
     @import './src/common/loading';
   }
-  .theme{
+  
+  .modal-clickout{
+    display: none;
     position: absolute;
     top: 0;
-    right: 0;
-    padding: 10px 10px;
-    cursor: pointer;
-    transition: all .3s;
-    img{
-      width: 30px;
-    }
-    &:hover {
-      top: 5px;
-      img{
-      transform: scale(1.2);
-      }
-    }
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .4);
+    z-index: 10;
   }
-  .lb-button{
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding: 10px 10px;
-    color: white;
-    cursor: pointer;
-    transition: all .3s;
-    img{
-      width: 25px;
-    transition: all .3s;
-  }
-    &:hover {
-      top: 5px;
-      img{
-      transform: scale(1.2);
-      }
-    }
-  }
-  .help-button{
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    padding: 10px 20px;
-    color: $tile-dark;
-    cursor: help;
-    transition: all .3s;
-    &:hover{
-      bottom: 5px;
-      font-size: 1.3rem;
-    }
-  }
+
   #help{
     position: absolute;
     bottom: 20px;
@@ -282,20 +249,37 @@ body{
     color: white;
     background-color: $tile-dark;
     border: 1px solid white;
-    
     .clock{
       cursor: default;
       font-size: 40px;
     }
   }
-  .cta{cursor: pointer;}
+  .cta{
+    cursor: pointer;
+  }
 }
 
 @media (max-width:500px) {
   .app{
+      padding-top: 50px;
+      .navbar{
+      overflow: unset;
+      .navpop{
+        top: 50px;
+        right: 0;
+        height: 200px;
+        width: 100%;
+        flex-direction: column;
+        background-color: black;
+      }
+    }
     .game{
+      max-width: 400px;
       height: 98vw;
       width: 98vw;
+    }
+    .modal-clickout{
+    display: unset;
     }
   }
 }
