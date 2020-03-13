@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:100,300,400,500&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Dancing+Script&display=swap');
 ::-webkit-scrollbar{
   background-color: transparent;
   position: relative;
@@ -32,6 +31,8 @@ p, span{
 body{
   text-align: center;
 }
+
+
   $app-bg: rgb(150, 150, 150);
   $game-bg: rgb(215, 215, 215);
   $tile-dark: rgb(20, 20, 20);
@@ -42,6 +43,56 @@ body{
   width: 100vw;
   height: 100vh;
   background-color: $app-bg;
+  .navbar {
+    display: flex;
+    position: fixed;
+    align-items: center;
+    top: 0;
+    width: 100%;
+    max-height: 55px;
+    padding: 0px 20px 0px 20px ;
+    box-shadow: 0px 3px 15px -5px black;
+    user-select: none;
+    font-family: 'Alegreya Sans SC', sans-serif;
+    background-color: black;
+    z-index: 1000;
+    h1{
+      padding: 20px;
+      font-weight: 300;
+      font-size: 1.8rem;
+      color: white;
+    }
+    .hamburger{
+      font-size: 1.5rem;
+      margin-left: auto;
+      padding-right: 10px;
+      z-index: 50;
+      cursor: pointer;
+      p{
+        color:white;
+        padding: 10px;
+      }
+    }
+  }
+  .navdrop{
+    position: fixed;
+    top: 55px;
+    right: 0;
+    padding: 25px;
+    text-align: center;
+    z-index: 1001;
+    box-shadow: 0px 10px 10px -10px black;
+    background-color: black;
+    transition: .2s;
+    p:nth-child(2){
+      margin: 40px 0px;
+
+    }
+    p{
+      color:white;
+      cursor: pointer;
+    }
+  }
   .game{
     display: flex;
     flex-wrap: wrap;

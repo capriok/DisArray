@@ -6,14 +6,11 @@ import axios from 'axios'
 import './App.scss';
 import './common/confetti.scss'
 import logo from './gallery/logo.png'
-import lbIcon from './gallery/lb-icon.png'
 import format from './common/format'
 import Leaderboard from './common/leaderboard'
-import nightlight from './gallery/nightlight.png'
-import daylight from './gallery/daylight.png'
 
 export default function Board() {
-  // console.log = function () { }
+  console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
   const spaces = 16
   const trueDarkState = localStorage.getItem('DA-darkState') === 'true'
@@ -27,10 +24,11 @@ export default function Board() {
     whiteFont: { color: 'white' },
     invertImage: { filter: 'invert(1)' }
   }
-  const [darkState, setdarkState] = useState(trueDarkState)
+  const [darkState, setDarkState] = useState(trueDarkState)
   const [theTheme, setTheTheme] = useState({})
   const [helpShowing, showHelp] = useState(false)
   const [leaderboardOpen, openLeaderboard] = useState(false)
+  const [navDrop, setDrop] = useState(false)
   const [name, setName] = useState('')
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
@@ -222,6 +220,27 @@ export default function Board() {
   return (
     <>
       <div className="app" style={theTheme.app}>
+
+        <div className="navbar">
+          <h1>Kyle Caprio</h1>
+          <div className="hamburger" onClick={() => setDrop(!navDrop)}><p>☰</p></div>
+          {navDrop &&
+            <>
+              <div className="navdrop">
+                <p onClick={() => toggleHelp}>Objective</p>
+                <p onClick={() => toggleLB()}>Leaderboards</p>
+                <p onClick={() => {
+                  setDarkState(!darkState)
+                  localStorage.setItem('DA-darkState', !darkState)
+                }}>Dark Mode</p>
+              </div>
+              <div className="modal-clickout"
+                style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
+                onTouchStart={() => setDrop(!navDrop)}>
+              </div>
+            </>
+          }
+        </div >
         {(playing && !victory) &&
           <button>
             {clock}
@@ -256,25 +275,18 @@ export default function Board() {
           from={{ opacity: 0 }}
           enter={{ opacity: 1 }}
           leave={{ opacity: 0 }}>
-          {helpShowing => helpShowing && (props => <p style={props} id="help" style={theTheme.whiteFont}> Sort the tiles in ascending order to win.</p>)}
+          {helpShowing => helpShowing &&
+            (props => <p style={props} id="help" style={theTheme.whiteFont}>
+              Sort the tiles in ascending order to win.</p>
+            )
+          }
         </Transition>
-        <div className="theme" onClick={() => {
-          setdarkState(!darkState)
-          localStorage.setItem('DA-darkState', !darkState)
-        }
-
-        }>
-          <img style={theTheme.invertImage} src={darkState ? nightlight : daylight} alt="" />
-        </div>
-        <div className="help-button" onClick={() => toggleHelp()}>
-          <h1 style={theTheme.whiteFont} >?</h1>
-        </div>
-        <div className="lb-button" onClick={() => toggleLB()}>
-          <img style={theTheme.invertImage} src={lbIcon} alt="" />
-        </div>
       </div>
     </>
   );
 }
 
 ReactDOM.render(<Board />, document.getElementById('root'));
+
+// reduce leaderboard to single name entries
+// also if lodash uniqby to remove dupe times
