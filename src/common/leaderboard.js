@@ -43,13 +43,15 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
               <span>Time</span>
             </div>
           </div>
-          {!loading && entries.slice(0, 20).map((row, i) => (
-            <div className="entries" key={i}>
-              <span>{i + 1}</span>
-              <span>{row.name}</span>
-              <span>{row.time}</span>
-            </div>
-          ))}
+          <div className="entries-scroll">
+            {!loading && entries.slice(0, 20).map((row, i) => (
+              <div className="entries" key={i}>
+                <span>{i + 1}</span>
+                <span>{row.name}</span>
+                <span>{row.time}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       {victory && <Confetti />

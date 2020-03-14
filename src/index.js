@@ -10,7 +10,7 @@ import format from './common/format'
 import Leaderboard from './common/leaderboard'
 
 export default function Board() {
-  console.log = function () { }
+  // console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
   const spaces = 16
   const trueDarkState = localStorage.getItem('DA-darkState') === 'true'
@@ -42,6 +42,7 @@ export default function Board() {
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
 
   const startGame = () => {
+    openLeaderboard(false)
     if (!name) {
       try {
         console.log(DOMnickname);
@@ -62,7 +63,6 @@ export default function Board() {
     setSec(0)
     !playing && toggleHelp()
     hasWon(false)
-    openLeaderboard(false)
     inSession(true)
   }
 
@@ -225,8 +225,14 @@ export default function Board() {
           {navPop &&
             <>
               <div className="navpop">
-                <p onClick={() => toggleHelp()}>Objective</p>
-                <p onClick={() => toggleLB()}>Leaderboards</p>
+                <p onClick={() => {
+                  toggleHelp()
+                  navPopOpen(!navPop)
+                }}>Objective</p>
+                <p onClick={() => {
+                  toggleLB()
+                  navPopOpen(!navPop)
+                }}>Leaderboards</p>
                 <p onClick={() => {
                   setDarkState(!darkState)
                   localStorage.setItem('DA-darkState', !darkState)
@@ -247,7 +253,7 @@ export default function Board() {
         }
         <div className="game" style={theTheme.game}>
           {leaderboardOpen && <Leaderboard victory={victory} time={clock} leaderboardReady={leaderboardReady} />}
-          {(!playing && !victory) &&
+          {!leaderboardOpen && (!playing && !victory) &&
             < div className="greeting">
               <img draggable={false} src={logo} alt="" />
               <h1>DisArray</h1>
@@ -260,7 +266,7 @@ export default function Board() {
               </form>
             </div>
           }
-          {tiles.map((tile, i) => (
+          {!leaderboardOpen && tiles.map((tile, i) => (
             <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}>
               <div key={i}>{tile <= 15 ? tile : ''}</div>
             </li>
@@ -289,3 +295,6 @@ ReactDOM.render(<Board />, document.getElementById('root'));
 
 // reduce leaderboard to single name entries
 // also if lodash uniqby to remove dupe times
+
+// separate game from everything else
+// app, nav{game, greeting{help}, leaderbaord}, buttons
