@@ -224,7 +224,7 @@ body{
 
   #help{
     position: absolute;
-    bottom: 20px;
+    bottom: 0px;
     color:black;
     font-style: italic;
     font-size: 20px;
@@ -265,6 +265,9 @@ body{
       padding-top: 50px;
       .navbar{
       overflow: unset;
+      h1{
+        font-size: 1.5rem;
+      }
       .navpop{
         top: 50px;
         right: 0;
@@ -275,12 +278,29 @@ body{
       }
     }
     .game{
-      max-width: 400px;
-      height: 98vw;
-      width: 98vw;
+      height: 90vw;
+      width: 90vw;
+      .tile{
+        div{
+          font-size: 2rem;
+        }
+      }
+    }
+    .greeting{
+      font-size: 25px;
+    }
+    .leaderboard span{
+      font-size: 1rem;
     }
     .modal-clickout{
     display: unset;
+    }
+    button{
+      margin: 10px;
+      font-size: 13px;
+    }
+    #help{
+      font-size: 16px;
     }
   }
 }

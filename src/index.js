@@ -238,7 +238,7 @@ export default function Board() {
             </>
           }
           <div className="hamburger" onClick={() => navPopOpen(!navPop)}><p>☰</p></div>
-        </div >
+        </div>
 
         {(playing && !victory) &&
           <button>
