@@ -5,9 +5,10 @@ import _ from 'lodash'
 import axios from 'axios'
 import './App.scss';
 import './common/confetti.scss'
-import logo from './gallery/logo.png'
 import format from './common/format'
-import Leaderboard from './common/leaderboard'
+import Leaderboard from './components/leaderboard'
+import Navbar from './components/navbar'
+import Greeting from './components/greeting';
 
 export default function Board() {
   // console.log = function () { }
@@ -28,18 +29,32 @@ export default function Board() {
   const [theTheme, setTheTheme] = useState({})
   const [helpShowing, showHelp] = useState(false)
   const [leaderboardOpen, openLeaderboard] = useState(false)
+  const [leaderboardReady, entrySent] = useState()
   const [navPop, navPopOpen] = useState(false)
   const [name, setName] = useState('')
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
   const [tiles, setTiles] = useState([])
-  const [leaderboardReady, entrySent] = useState(false)
   const [time, setTime] = useState();
   const [min, setMin] = useState(2);
   const [sec, setSec] = useState(20);
 
   useEffect(() => trueDarkState ? setTheTheme(theme) : setTheTheme({}), [darkState, trueDarkState])
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
+
+
+  const playerAction = (e, i, tile) => {
+    console.log("---------User Clicked--------");
+    console.log('Action location', i);
+    let newName
+    let check = () => {
+      if (tile === 16) {
+        return newName = 'EMPTY'
+      } else { return tile }
+    }
+    console.log('Action Tile', check(newName));
+    tile !== 16 && checkSurroundings(i, tile)
+  }
 
   const startGame = () => {
     openLeaderboard(false)
@@ -64,54 +79,6 @@ export default function Board() {
     !playing && toggleHelp()
     hasWon(false)
     inSession(true)
-  }
-
-  const checkForWin = (arr) => {
-    let inOrder = false
-    console.log('Checking for win...');
-    for (let i = 1; i < arr.length - 1; i++) {
-      if (arr[i + 1] === arr[i] + 1) {
-        inOrder = true
-      } else {
-        inOrder = false
-        break;
-      }
-    }
-    console.log('--Tiles in order?', inOrder);
-    inOrder && endGame()
-  }
-
-  const endGame = () => {
-    hasWon(true)
-    inSession(false)
-    const URL = 'https://k-server.netlify.com/.netlify/functions/server/create'
-    const postToLeaderboard = async () => {
-      await axios.post(URL, {
-        name: name,
-        time: clock,
-        seconds: clockInSeconds()
-      }, { "Access-control-allow-origin": "*" })
-        .then(res => {
-          console.log('Ranking Sent =>', name, '/', time, '/', clockInSeconds())
-          entrySent(true)
-        })
-        .catch(e => console.log(e))
-    }
-    postToLeaderboard(name, clock)
-    openLeaderboard(true)
-  }
-
-  const playerAction = (e, i, tile) => {
-    console.log("---------User Clicked--------");
-    console.log('Action location', i);
-    let newName
-    let check = () => {
-      if (tile === 16) {
-        return newName = 'EMPTY'
-      } else { return tile }
-    }
-    console.log('Action Tile', check(newName));
-    tile !== 16 && checkSurroundings(i, tile)
   }
 
   const checkSurroundings = (i, tile) => {
@@ -165,6 +132,21 @@ export default function Board() {
     }
   }
 
+  const checkForWin = (arr) => {
+    let inOrder = false
+    console.log('Checking for win...');
+    for (let i = 1; i < arr.length - 1; i++) {
+      if (arr[i + 1] === arr[i] + 1) {
+        inOrder = true
+      } else {
+        inOrder = false
+        break;
+      }
+    }
+    console.log('--Tiles in order?', inOrder);
+    inOrder && endGame()
+  }
+
   const swapTiles = (i, tile, side) => {
     let step1 = tiles.filter(t => t !== 16)
     step1.splice(i - 1, 0, 16)
@@ -174,6 +156,26 @@ export default function Board() {
     const newTiles = step2
     setTiles(newTiles)
     checkForWin(newTiles)
+  }
+
+  const endGame = () => {
+    hasWon(true)
+    inSession(false)
+    const URL = 'https://k-server.netlify.com/.netlify/functions/server/create'
+    const postToLeaderboard = async () => {
+      await axios.post(URL, {
+        name: name,
+        time: clock,
+        seconds: clockInSeconds()
+      }, { "Access-control-allow-origin": "*" })
+        .then(res => {
+          console.log('Ranking Sent =>', name, '/', time, '/', clockInSeconds())
+          entrySent(true)
+        })
+        .catch(e => console.log(e))
+    }
+    postToLeaderboard(name, clock)
+    openLeaderboard(true)
   }
 
   const toggleHelp = () => {
@@ -220,71 +222,22 @@ export default function Board() {
   return (
     <>
       <div className="app" style={theTheme.app}>
-        <div className="navbar">
-          <h1>Kyle Caprio</h1>
-          {navPop &&
-            <>
-              <div className="navpop">
-                <p onClick={() => {
-                  toggleHelp()
-                  navPopOpen(!navPop)
-                }}>Objective</p>
-                <p onClick={() => {
-                  toggleLB()
-                  navPopOpen(!navPop)
-                }}>Leaderboards</p>
-                <p onClick={() => {
-                  setDarkState(!darkState)
-                  localStorage.setItem('DA-darkState', !darkState)
-                }}>Theme</p>
-              </div>
-              <div className="modal-clickout"
-                onTouchStart={() => navPopOpen(!navPop)}>
-              </div>
-            </>
-          }
-          <div className="hamburger" onClick={() => navPopOpen(!navPop)}><p>☰</p></div>
-        </div>
-
-        {(playing && !victory) &&
-          <button>
-            {clock}
-          </button>
-        }
+        <Navbar darkState={darkState} setDarkState={setDarkState} toggleLB={toggleLB} toggleHelp={toggleHelp} navPop={navPop} navPopOpen={navPopOpen} />
+        {(playing && !victory) && <button>{clock}</button>}
         <div className="game" style={theTheme.game}>
           {leaderboardOpen && <Leaderboard victory={victory} time={clock} leaderboardReady={leaderboardReady} />}
-          {!leaderboardOpen && (!playing && !victory) &&
-            < div className="greeting">
-              <img draggable={false} src={logo} alt="" />
-              <h1>DisArray</h1>
-              <form autoComplete="off" onSubmit={e => e.preventDefault()}>
-                <input
-                  id="nickname" placeholder="Enter a Nickname"
-                  autoFocus={true} maxLength={8} value={name}
-                  onChange={e => setNickname(e)}
-                />
-              </form>
-            </div>
-          }
+          {!leaderboardOpen && (!playing && !victory) && <Greeting name={name} setNickname={setNickname} />}
           {!leaderboardOpen && tiles.map((tile, i) => (
-            <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}>
-              <div key={i}>{tile <= 15 ? tile : ''}</div>
-            </li>
+            <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}><div key={i}>{tile <= 15 ? tile : ''}</div></li>
           ))}
         </div>
-        <button className="cta" onClick={() => startGame()}>
-          {!playing ? 'Start Game' : 'Scramble Tiles'}
-        </button>
+        <button className="cta" onClick={() => startGame()}>{!playing ? 'Start Game' : 'Scramble Tiles'}</button>
         <Transition
           items={helpShowing}
           from={{ opacity: 0 }}
           enter={{ opacity: 1 }}
           leave={{ opacity: 0 }}>
-          {helpShowing => helpShowing &&
-            (props => <p style={props} id="help" style={theTheme.whiteFont}>
-              Sort the tiles in ascending order to win.</p>
-            )
-          }
+          {helpShowing => helpShowing && (props => <p style={props} id="help" style={theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>)}
         </Transition>
       </div>
     </>
