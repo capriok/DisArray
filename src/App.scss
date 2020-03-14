@@ -43,6 +43,7 @@ body{
   width: 100vw;
   height: 100vh;
   background-color: $app-bg;
+  position: fixed;
   .navbar {
     display: flex;
     position: fixed;
@@ -224,7 +225,7 @@ body{
 
   #help{
     position: absolute;
-    bottom: 0px;
+    bottom: 10px;
     color:black;
     font-style: italic;
     font-size: 20px;
@@ -298,6 +299,7 @@ body{
         .entries-scroll{
           width: 90vw;
           height: 90vw;
+          margin-bottom: 0px;
           overflow: scroll;
           .entries{
             display: flex;
@@ -325,7 +327,7 @@ body{
     }
     #help{
       font-size: 16px;
-      padding-bottom: 5px;
+      bottom: 5px;
     }
   }
 }
