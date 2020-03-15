@@ -174,7 +174,7 @@ export default function Board() {
         })
         .catch(e => console.log(e))
     }
-    postToLeaderboard(name, clock)
+    postToLeaderboard()
     openLeaderboard(true)
   }
 
