@@ -71,7 +71,7 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    setTiles(population)
+    // setTiles(population)
     setMin(0)
     setSec(0)
     !playing && toggleHelp()
