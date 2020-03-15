@@ -163,9 +163,9 @@ export default function Board() {
     hasWon(true)
     inSession(false)
     // const POST_URL = 'https://k-server.netlify.com/.netlify/functions/server/update'
-    const POST_URL = 'http://localhost:9000/.netlify/functions/server/update'
+    const DEV_POST_URL = 'http://localhost:9000/.netlify/functions/server/update'
     const postToLeaderboard = async () => {
-      await axios.post(POST_URL, {
+      await axios.post(DEV_POST_URL, {
         name: name,
         time: time,
         seconds: timeInSeconds()
