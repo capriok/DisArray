@@ -7,7 +7,8 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const GET_URL = 'https://k-server.netlify.com/.netlify/functions/server/'
+  const PROD_GET_URL = 'https://k-server.netlify.com/.netlify/functions/server/'
+  const DEV_GET_URL = 'https://k-server.netlify.com/.netlify/functions/server/'
 
   useEffect(() => {
     const populate = async () => {
