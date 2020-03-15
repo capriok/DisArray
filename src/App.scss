@@ -154,6 +154,7 @@ body{
       p{width: 100%;}
     }
     .leaderboard{
+      
       @include flex;
       flex-direction: column;
       justify-content: flex-start;

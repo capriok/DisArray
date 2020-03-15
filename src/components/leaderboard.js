@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Confetti from '../common/confetti';
 import Loading from '../common/loading';
 import axios from 'axios'
-import _ from 'lodash'
 
 export default function Leaderboard({ time, leaderboardReady, victory }) {
   const [entries, setEntries] = useState([])
@@ -13,7 +12,7 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
   useEffect(() => {
     const populate = async () => {
       console.log('--Fetching leaderboard entries')
-      await axios.get(URL)
+      await axios.get(URL, { "Access-Control-Allow-Origin": "*" })
         .then(res => {
           res.data.sort((a, b) => a.seconds - b.seconds)
           console.log(res.data)
@@ -27,6 +26,7 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
 
   return (
     <>
+      {victory && <Confetti />}
       <div className="post-game">
         {loading && <Loading />}
         {victory &&
@@ -55,8 +55,6 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
           </div>
         </div>
       </div>
-      {victory && <Confetti />
-      }
     </>
   )
 }

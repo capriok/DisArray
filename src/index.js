@@ -73,7 +73,7 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    // setTiles(population)
+    setTiles(population)
     setMin(0)
     setSec(0)
     !playing && toggleHelp()
@@ -167,14 +167,14 @@ export default function Board() {
         name: name.toLowerCase(),
         time: clock,
         seconds: clockInSeconds()
-      })
+      }, { "Access-Control-Allow-Origin": "*" })
         .then(() => {
           console.log('Ranking Sent =>', name, '/', time, '/', clockInSeconds())
           entrySent(true)
         })
         .catch(e => console.log(e))
     }
-    postToLeaderboard()
+    postToLeaderboard(name, time)
     openLeaderboard(true)
   }
 
