@@ -28,6 +28,7 @@ export default function Board() {
   const [darkState, setDarkState] = useState(trueDarkState)
   const [theTheme, setTheTheme] = useState({})
   const [helpShowing, showHelp] = useState(false)
+  const [entries, setEntries] = useState([])
   const [leaderboardOpen, openLeaderboard] = useState(false)
   const [leaderboardReady, entrySent] = useState()
   const [navPop, navPopOpen] = useState(false)
@@ -35,7 +36,7 @@ export default function Board() {
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
   const [tiles, setTiles] = useState([])
-  const [time, setTime] = useState();
+  const [clock, setClock] = useState();
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
 
@@ -161,20 +162,21 @@ export default function Board() {
   const endGame = async () => {
     hasWon(true)
     inSession(false)
-    const URL = 'https://k-server.netlify.com/.netlify/functions/server/update'
+    // const POSTURL = 'https://k-server.netlify.com/.netlify/functions/server/update'
+    const POST_URL = 'http://localhost:9000/.netlify/functions/server/update'
     const postToLeaderboard = async () => {
-      await axios.post(URL, {
-        name: name.toLowerCase(),
-        time: clock,
-        seconds: clockInSeconds()
+      await axios.post(POST_URL, {
+        name: name,
+        time: time,
+        seconds: timeInSeconds()
       })
         .then(() => {
-          console.log('Ranking Sent =>', name, '/', clock, '/', clockInSeconds())
+          console.log('Ranking Sent =>', name, '/', time, '/', timeInSeconds())
+          entrySent(true)
         })
-        .catch(e => console.log(e))
+        .catch(error => console.log(error))
     }
-    postToLeaderboard()
-    entrySent(true)
+    postToLeaderboard(name, time)
     openLeaderboard(true)
   }
 
@@ -202,7 +204,7 @@ export default function Board() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setTime(new Date().toLocaleTimeString());
+      setClock(new Date().toLocaleTimeString());
       playing && setSec(sec + 1)
       if (sec === 59) {
         setSec(0)
@@ -213,10 +215,10 @@ export default function Board() {
     return () => {
       clearTimeout(timeout);
     }
-  }, [time, sec, min]);
+  }, [clock, sec, min]);
 
-  const clock = `${format(min)}:${format(sec)}`
-  const clockInSeconds = () => {
+  const time = `${format(min)}:${format(sec)}`
+  const timeInSeconds = () => {
     let secs = (min * 60) + sec
     return secs
   }
@@ -225,9 +227,9 @@ export default function Board() {
     <>
       <div className="app" style={theTheme.app}>
         <Navbar darkState={darkState} setDarkState={setDarkState} toggleLB={toggleLB} toggleHelp={toggleHelp} navPop={navPop} navPopOpen={navPopOpen} />
-        {(playing && !victory) && <button>{clock}</button>}
+        {(playing && !victory) && <button>{time}</button>}
         <div className="game" style={theTheme.game}>
-          {leaderboardOpen && <Leaderboard victory={victory} time={clock} leaderboardReady={leaderboardReady} />}
+          {leaderboardOpen && <Leaderboard victory={victory} time={time} leaderboardReady={leaderboardReady} />}
           {!leaderboardOpen && (!playing && !victory) && <Greeting name={name} setNickname={setNickname} />}
           {!leaderboardOpen && tiles.map((tile, i) => (
             <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}><div key={i}>{tile <= 15 ? tile : ''}</div></li>
