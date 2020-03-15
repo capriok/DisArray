@@ -158,23 +158,20 @@ export default function Board() {
     inOrder && endGame();
   }
 
-  const endGame = () => {
+  const endGame = async () => {
     hasWon(true)
     inSession(false)
     const URL = 'https://k-server.netlify.com/.netlify/functions/server/update'
-    const postToLeaderboard = async () => {
-      await axios.post(URL, {
-        name: name.toLowerCase(),
-        time: clock,
-        seconds: clockInSeconds()
+    await axios.post(URL, {
+      name: name.toLowerCase(),
+      time: clock,
+      seconds: clockInSeconds()
+    })
+      .then(() => {
+        console.log('Ranking Sent =>', name, '/', clock, '/', clockInSeconds())
+        entrySent(true)
       })
-        .then(() => {
-          console.log('Ranking Sent =>', name, '/', clock, '/', clockInSeconds())
-          entrySent(true)
-        })
-        .catch(e => console.log(e))
-    }
-    postToLeaderboard()
+      .catch(e => console.log(e))
     openLeaderboard(true)
   }
 
