@@ -32,10 +32,9 @@ body{
   text-align: center;
 }
 
-
-  $app-bg: rgb(150, 150, 150);
-  $game-bg: rgb(215, 215, 215);
-  $tile-dark: rgb(20, 20, 20);
+$app-bg: rgb(150, 150, 150);
+$game-bg: rgb(215, 215, 215);
+$tile-dark: rgb(20, 20, 20);
 
 .app{
   @include flex;

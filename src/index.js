@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-require('dotenv').config
 import ReactDOM from 'react-dom';
 import { Transition } from 'react-spring/renderprops'
 import _ from 'lodash'
@@ -12,24 +11,21 @@ import Navbar from './components/navbar'
 import Greeting from './components/greeting';
 
 export default function Board() {
-  // console.log = function () { }
+  if (process.env.NODE_ENV !== 'development') {
+    console.log = function () { }
+  }
   let DOMnickname = document.getElementById('nickname')
-  const spaces = 16
   const trueDarkState = localStorage.getItem('DA-darkState') === 'true'
   let theme = {
-    app: {
-      backgroundColor: 'rgb(35, 35, 35)',
-    },
-    game: {
-      backgroundColor: 'rgb(200, 200, 200)',
-    },
+    app: { backgroundColor: 'rgb(35, 35, 35)', },
+    game: { backgroundColor: 'rgb(200, 200, 200)', },
     whiteFont: { color: 'white' },
     invertImage: { filter: 'invert(1)' }
   }
+  const spaces = 16
   const [darkState, setDarkState] = useState(trueDarkState)
   const [theTheme, setTheTheme] = useState({})
   const [helpShowing, showHelp] = useState(false)
-  const [entries, setEntries] = useState([])
   const [leaderboardOpen, openLeaderboard] = useState(false)
   const [leaderboardReady, entrySent] = useState()
   const [navPop, navPopOpen] = useState(false)
@@ -161,24 +157,23 @@ export default function Board() {
   }
 
   const endGame = async () => {
-    hasWon(true)
-    inSession(false)
-    const PROD_POST_URL = 'https://k-server.netlify.com/.netlify/functions/server/update'
-    const DEV_POST_URL = 'http://localhost:9000/.netlify/functions/server/update'
     const postToLeaderboard = async () => {
-      await axios.post(DEV_POST_URL, {
+      await axios.post(process.env.REACT_APP_PROD_POST_URL, {
         name: name,
         time: time,
         seconds: timeInSeconds()
       })
         .then(() => {
-          console.log('Ranking Sent =>', name, '/', time, '/', timeInSeconds())
+          console.log('Entry Sent =>', name, '/', time, '/', timeInSeconds())
+          setTiles(_.shuffle(tiles))
           entrySent(true)
         })
         .catch(error => console.log(error))
     }
     postToLeaderboard(name, time)
     openLeaderboard(true)
+    hasWon(true)
+    inSession(false)
   }
 
   const toggleHelp = () => {
@@ -230,7 +225,7 @@ export default function Board() {
         <Navbar darkState={darkState} setDarkState={setDarkState} toggleLB={toggleLB} toggleHelp={toggleHelp} navPop={navPop} navPopOpen={navPopOpen} />
         {(playing && !victory) && <button>{time}</button>}
         <div className="game" style={theTheme.game}>
-          {leaderboardOpen && <Leaderboard victory={victory} time={time} leaderboardReady={leaderboardReady} />}
+          {leaderboardOpen && <Leaderboard victory={victory} time={`${format(min)}:${format(sec - 1)}`} leaderboardReady={leaderboardReady} />}
           {!leaderboardOpen && (!playing && !victory) && <Greeting name={name} setNickname={setNickname} />}
           {!leaderboardOpen && tiles.map((tile, i) => (
             <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}><div key={i}>{tile <= 15 ? tile : ''}</div></li>

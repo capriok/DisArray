@@ -19,11 +19,13 @@ $duration: 1100;
   width: 500px;
   height: 500px;
   overflow: hidden;
+  z-index: 100;
+  opacity: .7;
 }
 .confetti-piece {
   position: absolute;
-  width: 8px;
-  height: 16px;
+  width: 5px;
+  height: 15px;
   background: $yellow;
   top: 0;
   opacity: 0;
@@ -33,10 +35,9 @@ $duration: 1100;
       transform: rotate(#{randomNum(-80, 80)}deg);
       animation: makeItRain $duration * 1ms infinite ease-out;
       animation-delay: #{randomNum(0, $duration * .5)}ms;
-      animation-duration: #{randomNum($duration * .7, $duration * 1.2)}ms
+      animation-duration: #{randomNum($duration * .7, $duration * 3.2)}ms
     }
   }
-  
   &:nth-child(odd) {
     background: $blue;
   }

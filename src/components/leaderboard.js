@@ -7,13 +7,10 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const PROD_GET_URL = 'https://k-server.netlify.com/.netlify/functions/server/'
-  const DEV_GET_URL = 'https://k-server.netlify.com/.netlify/functions/server/'
-
   useEffect(() => {
     const populate = async () => {
       console.log('--Fetching leaderboard entries')
-      await axios.get(PROD_GET_URL)
+      await axios.get(process.env.REACT_APP_PROD_GET_URL)
         .then(res => {
           res.data.sort((a, b) => a.seconds - b.seconds)
           console.log(res.data)
@@ -27,8 +24,8 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
 
   return (
     <>
-      {victory && <Confetti />}
       <div className="post-game">
+        {victory && <Confetti />}
         {loading && <Loading />}
         {victory &&
           <div className="head">
@@ -38,7 +35,7 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
         }
         <div className="leaderboard">
           <div className="head">
-            <h1>Leaderboards</h1>
+            <h1>Leaderboard</h1>
             <div className="titles">
               <span>Rank</span>
               <span>Name</span>
