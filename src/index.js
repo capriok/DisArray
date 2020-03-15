@@ -70,8 +70,8 @@ export default function Board() {
       population.push(i)
     }
     population.splice(spaces, 0, 16)
-    setTiles(_.shuffle(population))
-    // setTiles(population)
+    // setTiles(_.shuffle(population))
+    setTiles(population)
     setMin(0)
     setSec(0)
     !playing && toggleHelp()
@@ -157,6 +157,9 @@ export default function Board() {
   }
 
   const endGame = async () => {
+    openLeaderboard(true)
+    hasWon(true)
+    inSession(false)
     const postToLeaderboard = async () => {
       await axios.post(process.env.REACT_APP_PROD_POST_URL, {
         name: name,
@@ -165,15 +168,12 @@ export default function Board() {
       })
         .then(() => {
           console.log('Entry Sent =>', name, '/', time, '/', timeInSeconds())
-          setTiles(_.shuffle(tiles))
           entrySent(true)
+          setTiles(_.shuffle(tiles))
         })
         .catch(error => console.log(error))
     }
     postToLeaderboard(name, time)
-    openLeaderboard(true)
-    hasWon(true)
-    inSession(false)
   }
 
   const toggleHelp = () => {
