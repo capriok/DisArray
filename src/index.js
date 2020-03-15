@@ -36,8 +36,8 @@ export default function Board() {
   const [victory, hasWon] = useState(false)
   const [tiles, setTiles] = useState([])
   const [time, setTime] = useState();
-  const [min, setMin] = useState(2);
-  const [sec, setSec] = useState(20);
+  const [min, setMin] = useState(0);
+  const [sec, setSec] = useState(0);
 
   useEffect(() => trueDarkState ? setTheTheme(theme) : setTheTheme({}), [darkState, trueDarkState])
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
@@ -162,16 +162,19 @@ export default function Board() {
     hasWon(true)
     inSession(false)
     const URL = 'https://k-server.netlify.com/.netlify/functions/server/update'
-    await axios.post(URL, {
-      name: name.toLowerCase(),
-      time: clock,
-      seconds: clockInSeconds()
-    })
-      .then(() => {
-        console.log('Ranking Sent =>', name, '/', clock, '/', clockInSeconds())
-        entrySent(true)
+    const postToLeaderboard = async () => {
+      await axios.post(URL, {
+        name: name.toLowerCase(),
+        time: clock,
+        seconds: clockInSeconds()
       })
-      .catch(e => console.log(e))
+        .then(() => {
+          console.log('Ranking Sent =>', name, '/', clock, '/', clockInSeconds())
+        })
+        .catch(e => console.log(e))
+    }
+    postToLeaderboard()
+    entrySent(true)
     openLeaderboard(true)
   }
 
