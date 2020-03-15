@@ -167,7 +167,7 @@ export default function Board() {
         name: name.toLowerCase(),
         time: clock,
         seconds: clockInSeconds()
-      }, { "Access-Control-Allow-Origin": "*" })
+      })
         .then(() => {
           console.log('Ranking Sent =>', name, '/', clock, '/', clockInSeconds())
           entrySent(true)

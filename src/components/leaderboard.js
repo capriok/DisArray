@@ -12,7 +12,7 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
   useEffect(() => {
     const populate = async () => {
       console.log('--Fetching leaderboard entries')
-      await axios.get(URL, { "Access-Control-Allow-Origin": "*" })
+      await axios.get(URL)
         .then(res => {
           res.data.sort((a, b) => a.seconds - b.seconds)
           console.log(res.data)
