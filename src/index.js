@@ -161,14 +161,14 @@ export default function Board() {
   const endGame = () => {
     hasWon(true)
     inSession(false)
-    const URL = 'https://k-server.netlify.com/.netlify/functions/server/create'
+    const URL = 'https://k-server.netlify.com/.netlify/functions/server/update'
     const postToLeaderboard = async () => {
       await axios.post(URL, {
-        name: name,
+        name: name.toLowerCase(),
         time: clock,
         seconds: clockInSeconds()
-      }, { "Access-control-allow-origin": "*" })
-        .then(res => {
+      })
+        .then(() => {
           console.log('Ranking Sent =>', name, '/', time, '/', clockInSeconds())
           entrySent(true)
         })
@@ -191,8 +191,9 @@ export default function Board() {
   }
 
   const setNickname = (e) => {
+    let name = e.target.value
     try {
-      setName(e.target.value)
+      setName(name.toLowerCase())
       DOMnickname.style.borderBottom = "2px solid black"
     } catch (error) {
       console.log(error);

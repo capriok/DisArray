@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Confetti from '../common/confetti';
 import Loading from '../common/loading';
 import axios from 'axios'
+import _ from 'lodash'
 
 export default function Leaderboard({ time, leaderboardReady, victory }) {
   const [entries, setEntries] = useState([])
@@ -12,18 +13,16 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
   useEffect(() => {
     const populate = async () => {
       console.log('--Fetching leaderboard entries')
-      await axios.get(URL, { "Access-control-allow-origin": "*" })
+      await axios.get(URL)
         .then(res => {
           res.data.sort((a, b) => a.seconds - b.seconds)
           console.log(res.data)
-
           setEntries(res.data)
           setLoading(false)
         })
         .catch(e => console.log(e))
     }
     leaderboardReady && populate()
-    populate()
   }, [leaderboardReady])
 
   return (
@@ -49,7 +48,7 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
             {!loading && entries.slice(0, 20).map((row, i) => (
               <div className="entries" key={i}>
                 <span>{i + 1}</span>
-                <span>{row.name}</span>
+                <span style={{ textTransform: 'capitalize' }}>{row.name}</span>
                 <span>{row.time}</span>
               </div>
             ))}
