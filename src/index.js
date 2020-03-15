@@ -132,6 +132,17 @@ export default function Board() {
     }
   }
 
+  const swapTiles = (i, tile, side) => {
+    let step1 = tiles.filter(t => t !== 16)
+    step1.splice(i - 1, 0, 16)
+    let step2 = step1.filter(t => t !== tile)
+    step2.splice(emptyIndex - 1, 0, tile)
+    console.log(`--Tile moved ${side}`)
+    const newTiles = step2
+    setTiles(newTiles)
+    checkForWin(newTiles)
+  }
+
   const checkForWin = (arr) => {
     let inOrder = false
     console.log('Checking for win...');
@@ -144,18 +155,7 @@ export default function Board() {
       }
     }
     console.log('--Tiles in order?', inOrder);
-    inOrder && endGame()
-  }
-
-  const swapTiles = (i, tile, side) => {
-    let step1 = tiles.filter(t => t !== 16)
-    step1.splice(i - 1, 0, 16)
-    let step2 = step1.filter(t => t !== tile)
-    step2.splice(emptyIndex - 1, 0, tile)
-    console.log(`--Tile moved ${side}`)
-    const newTiles = step2
-    setTiles(newTiles)
-    checkForWin(newTiles)
+    inOrder && endGame();
   }
 
   const endGame = () => {
@@ -169,12 +169,12 @@ export default function Board() {
         seconds: clockInSeconds()
       }, { "Access-Control-Allow-Origin": "*" })
         .then(() => {
-          console.log('Ranking Sent =>', name, '/', time, '/', clockInSeconds())
+          console.log('Ranking Sent =>', name, '/', clock, '/', clockInSeconds())
           entrySent(true)
         })
         .catch(e => console.log(e))
     }
-    postToLeaderboard(name, time)
+    postToLeaderboard(name, clock)
     openLeaderboard(true)
   }
 
@@ -209,6 +209,7 @@ export default function Board() {
         setMin(min + 1)
       }
     }, 1000);
+
     return () => {
       clearTimeout(timeout);
     }
