@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+require('dotenv').config
 import ReactDOM from 'react-dom';
 import { Transition } from 'react-spring/renderprops'
 import _ from 'lodash'
