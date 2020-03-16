@@ -225,9 +225,8 @@ $tile-dark: rgb(20, 20, 20);
 
   #help{
     position: absolute;
-    bottom: 10px;
+    top: 60px;
     color:black;
-    font-style: italic;
     font-size: 20px;
   }
   #nickname{
@@ -327,7 +326,7 @@ $tile-dark: rgb(20, 20, 20);
     }
     #help{
       font-size: 16px;
-      bottom: 5px;
+      top: 60px;
     }
   }
 }

@@ -30,7 +30,7 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
         {victory &&
           <div className="head">
             <h1>You've Won!</h1>
-            <p>Youre time: {time}</p>
+            <p>Your time: {time}</p>
           </div>
         }
         <div className="leaderboard">

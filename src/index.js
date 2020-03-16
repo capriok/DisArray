@@ -25,7 +25,7 @@ export default function Board() {
   const spaces = 16
   const [darkState, setDarkState] = useState(trueDarkState)
   const [theTheme, setTheTheme] = useState({})
-  const [helpShowing, showHelp] = useState(false)
+  const [helpShowing, showHelp] = useState(true)
   const [leaderboardOpen, openLeaderboard] = useState(false)
   const [leaderboardReady, entrySent] = useState()
   const [navPop, navPopOpen] = useState(false)
@@ -40,6 +40,12 @@ export default function Board() {
   useEffect(() => trueDarkState ? setTheTheme(theme) : setTheTheme({}), [darkState, trueDarkState])
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
 
+  const time = `${format(min)}:${format(sec)}`
+
+  const timeInSeconds = () => {
+    let secs = (min * 60) + sec
+    return secs
+  }
 
   const playerAction = (e, i, tile) => {
     console.log("---------User Clicked--------");
@@ -213,16 +219,11 @@ export default function Board() {
     }
   }, [clock, sec, min]);
 
-  const time = `${format(min)}:${format(sec)}`
-  const timeInSeconds = () => {
-    let secs = (min * 60) + sec
-    return secs
-  }
-
   return (
     <>
       <div className="app" style={theTheme.app}>
         <Navbar darkState={darkState} setDarkState={setDarkState} toggleLB={toggleLB} toggleHelp={toggleHelp} navPop={navPop} navPopOpen={navPopOpen} />
+        {helpShowing && <p id="help" style={theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
         {(playing && !victory) && <button>{time}</button>}
         <div className="game" style={theTheme.game}>
           {leaderboardOpen && <Leaderboard victory={victory} time={`${format(min)}:${format(sec - 1)}`} leaderboardReady={leaderboardReady} />}
@@ -232,22 +233,9 @@ export default function Board() {
           ))}
         </div>
         <button className="cta" onClick={() => startGame()}>{!playing ? 'Start Game' : 'Scramble Tiles'}</button>
-        <Transition
-          items={helpShowing}
-          from={{ opacity: 0 }}
-          enter={{ opacity: 1 }}
-          leave={{ opacity: 0 }}>
-          {helpShowing => helpShowing && (props => <p style={props} id="help" style={theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>)}
-        </Transition>
       </div>
     </>
   );
 }
 
 ReactDOM.render(<Board />, document.getElementById('root'));
-
-// reduce leaderboard to single name entries
-// also if lodash uniqby to remove dupe times
-
-// separate game from everything else
-// app, nav{game, greeting{help}, leaderbaord}, buttons
