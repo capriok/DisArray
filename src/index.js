@@ -25,7 +25,7 @@ export default function Board() {
   const spaces = 16
   const [darkState, setDarkState] = useState(trueDarkState)
   const [theTheme, setTheTheme] = useState({})
-  const [helpShowing, showHelp] = useState(true)
+  const [helpShowing, showHelp] = useState(false)
   const [leaderboardOpen, openLeaderboard] = useState(false)
   const [leaderboardReady, entrySent] = useState()
   const [navPop, navPopOpen] = useState(false)
