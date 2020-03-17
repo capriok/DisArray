@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Transition } from 'react-spring/renderprops'
 import _ from 'lodash'
 import axios from 'axios'
 import './App.scss';
@@ -9,6 +8,8 @@ import format from './common/format'
 import Leaderboard from './components/leaderboard'
 import Navbar from './components/navbar'
 import Greeting from './components/greeting';
+const publicIp = require('public-ip');
+const IPinfo = require("node-ipinfo");
 
 export default function Board() {
   if (process.env.NODE_ENV !== 'development') {
@@ -30,6 +31,8 @@ export default function Board() {
   const [leaderboardReady, entrySent] = useState()
   const [navPop, navPopOpen] = useState(false)
   const [name, setName] = useState('')
+  const [ip, setIp] = useState('')
+  const [location, setLocation] = useState('')
   const [playing, inSession] = useState(false)
   const [victory, hasWon] = useState(false)
   const [tiles, setTiles] = useState([])
@@ -163,6 +166,7 @@ export default function Board() {
   }
 
   const endGame = async () => {
+
     openLeaderboard(true)
     hasWon(true)
     inSession(false)
@@ -170,7 +174,9 @@ export default function Board() {
       await axios.post(process.env.REACT_APP_PROD_POST_URL, {
         name: name,
         time: time,
-        seconds: timeInSeconds()
+        seconds: timeInSeconds(),
+        ip: ip,
+        location: location
       })
         .then(() => {
           console.log('Entry Sent =>', name, '/', time, '/', timeInSeconds())
@@ -197,7 +203,7 @@ export default function Board() {
   const setNickname = (e) => {
     let name = e.target.value
     try {
-      setName(name.toLowerCase())
+      setName(name)
       DOMnickname.style.borderBottom = "2px solid black"
     } catch (error) {
       console.log(error);
@@ -218,6 +224,20 @@ export default function Board() {
       clearTimeout(timeout);
     }
   }, [clock, sec, min]);
+
+
+  useEffect(() => {
+    (async () => {
+      let ip = await publicIp.v4()
+      console.log(ip);
+      setIp(ip)
+      const token = "81d19b8e942ff8"
+      const ipinfo = new IPinfo(token)
+      ipinfo.lookupIp(ip).then(response => {
+        setLocation(response.city)
+      })
+    })()
+  }, [])
 
   return (
     <>
