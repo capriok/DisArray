@@ -32,7 +32,7 @@ export default function Board() {
     greeting: true, playing: false,
     victory: false, napPop: false, help: false, leaderboard: false
   })
-  const [user, setUser] = useState({ name: 'test', ip: '', location: '' })
+  const [user, setUser] = useState({ name: '', ip: '', location: '' })
   const [counter, setCounter] = useState({ clock: '', min: 0, sec: 0 })
   const [leaderboardReady, entrySent] = useState(false)
   const spaces = 16
@@ -75,7 +75,7 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    setTiles(population)
+    // setTiles(population)
     setCounter({ ...counter, min: 0, sec: 0 })
     !components.playing && toggleHelp()
     setComponents({ ...components, greeting: false, playing: true, victory: false, leaderboard: false })
@@ -222,7 +222,7 @@ export default function Board() {
       let ipAddress = await publicIp.v4()
       const token = "81d19b8e942ff8"
       const ipinfo = new IPinfo(token)
-      ipinfo.lookupIp(ipAddress).then(res => {
+      ipinfo.lookupIp('108.5.113.96').then(res => {
         setUser({
           ...user, ip: ipAddress, location: res.city
         })
