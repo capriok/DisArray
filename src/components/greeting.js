@@ -1,8 +1,7 @@
 import React from 'react'
 import logo from '../gallery/logo.png'
 
-const Greeting = (props) => {
-  const { setNickname, name } = props
+const Greeting = ({ user, setNickname }) => {
   return (
     <>
       <div className="greeting">
@@ -11,7 +10,7 @@ const Greeting = (props) => {
         <form autoComplete="off" onSubmit={e => e.preventDefault()}>
           <input
             id="nickname" placeholder="Enter a Nickname"
-            autoFocus={true} maxLength={8} value={name}
+            autoFocus={true} maxLength={8} value={user.name}
             onChange={e => setNickname(e)}
           />
         </form>

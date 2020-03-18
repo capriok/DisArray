@@ -3,7 +3,7 @@ import Confetti from '../common/confetti';
 import Loading from '../common/loading';
 import axios from 'axios'
 
-export default function Leaderboard({ time, leaderboardReady, victory }) {
+export default function Leaderboard({ user, components, gameTime, leaderboardReady }) {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -24,13 +24,13 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
 
   return (
     <>
+      {components.victory && <Confetti />}
       <div className="post-game">
-        {victory && <Confetti />}
         {loading && <Loading />}
-        {victory &&
+        {components.victory &&
           <div className="head">
             <h1>You've Won!</h1>
-            <p>Your time: {time}</p>
+            <p>{user.name} | {gameTime}</p>
           </div>
         }
         <div className="leaderboard">
@@ -51,6 +51,7 @@ export default function Leaderboard({ time, leaderboardReady, victory }) {
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </>

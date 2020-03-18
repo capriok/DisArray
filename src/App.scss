@@ -144,21 +144,26 @@ $tile-dark: rgb(20, 20, 20);
   @import './src/common/confetti';
   .post-game{
     position: relative;
+    display: flex;
+    flex-direction: column;
     width: 500px;
     height: 500px;
     z-index: 100;
     .head{
-      border-bottom: 1px solid black;
+      flex: 15%;
+      position: sticky;
+      top:0;
       padding: 15px;
-      p{width: 100%;}
+      border-bottom: 1px solid black;
+      p{width: 100%;text-transform: capitalize;}
     }
     .leaderboard{
-      
+      flex: 85%;
       @include flex;
       flex-direction: column;
       justify-content: flex-start;
       width: 100%;
-      height: 100%;
+      overflow: hidden;
       background-color: $game-bg;
       .head{
         padding: 0;
@@ -191,8 +196,7 @@ $tile-dark: rgb(20, 20, 20);
       }
       .entries-scroll{
         width: 100%;
-        height: 100%;
-        margin-bottom: -20px;
+        margin-bottom: -15px;
         overflow: scroll;
         .entries{
           display: flex;
@@ -286,14 +290,23 @@ $tile-dark: rgb(20, 20, 20);
     }
     .post-game{
       height: 90vw;
+      h1{font-size: 1.5rem;}
+      .head{padding: 5px;}
     .leaderboard{
-    span{
-      font-size: 1rem;
+      .head{
+        h1{padding: 5px 0px;}
+        .titles{span{
+          padding-top: 0px;
+        }
+        }
       }
+      span{
+        font-size: .9rem;
+        }
         .entries-scroll{
           width: 90vw;
           height: 90vw;
-          margin-bottom: 0px;
+          margin-bottom: -10px;
           overflow: scroll;
           .entries{
             display: flex;
@@ -304,7 +317,8 @@ $tile-dark: rgb(20, 20, 20);
             span{
               flex: 1;
               text-align: left;
-              padding: 10px;
+              font-size: .9rem;
+              padding: 8px;
               padding-left: 30px;
               border-bottom: 1px solid black;
             }

@@ -12,41 +12,37 @@ const publicIp = require('public-ip');
 const IPinfo = require("node-ipinfo");
 
 export default function Board() {
-  if (process.env.NODE_ENV !== 'development') {
-    console.log = function () { }
-  }
+  if (process.env.NODE_ENV !== 'development') console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
-  const trueDarkState = localStorage.getItem('DA-darkState') === 'true'
-  let theme = {
+  const themeStyles = {
     app: { backgroundColor: 'rgb(35, 35, 35)', },
     game: { backgroundColor: 'rgb(200, 200, 200)', },
     whiteFont: { color: 'white' },
     invertImage: { filter: 'invert(1)' }
   }
+  const trueDarkState = localStorage.getItem('DA-darkState') === 'true'
+  const [theme, setTheme] = useState({ darkState: trueDarkState, theTheme: {} })
+  useEffect(() => {
+    trueDarkState
+      ? setTheme({ ...theme, theTheme: themeStyles })
+      : setTheme({ ...theme, theTheme: {} })
+  }, [theme.darkState, trueDarkState])
+
+  const [components, setComponents] = useState({
+    greeting: true, playing: false,
+    victory: false, napPop: false, help: false, leaderboard: false
+  })
+  const [user, setUser] = useState({ name: 'test', ip: '', location: '' })
+  const [counter, setCounter] = useState({ clock: '', min: 0, sec: 0 })
+  const [leaderboardReady, entrySent] = useState(false)
   const spaces = 16
-  const [darkState, setDarkState] = useState(trueDarkState)
-  const [theTheme, setTheTheme] = useState({})
-  const [helpShowing, showHelp] = useState(false)
-  const [leaderboardOpen, openLeaderboard] = useState(false)
-  const [leaderboardReady, entrySent] = useState()
-  const [navPop, navPopOpen] = useState(false)
-  const [name, setName] = useState('')
-  const [ip, setIp] = useState('')
-  const [location, setLocation] = useState('')
-  const [playing, inSession] = useState(false)
-  const [victory, hasWon] = useState(false)
   const [tiles, setTiles] = useState([])
-  const [clock, setClock] = useState();
-  const [min, setMin] = useState(0);
-  const [sec, setSec] = useState(0);
+  const [help, setHelp] = useState(false)
 
-  useEffect(() => trueDarkState ? setTheTheme(theme) : setTheTheme({}), [darkState, trueDarkState])
   let emptyIndex = _.findIndex(tiles, t => t === 16) + 1
-
-  const time = `${format(min)}:${format(sec)}`
-
-  const timeInSeconds = () => {
-    let secs = (min * 60) + sec
+  const gameTime = `${format(counter.min)}:${format(counter.sec)}`
+  const gameTimeInSeconds = () => {
+    let secs = (counter.min * 60) + counter.sec
     return secs
   }
 
@@ -64,8 +60,7 @@ export default function Board() {
   }
 
   const startGame = () => {
-    openLeaderboard(false)
-    if (!name) {
+    if (!user.name) {
       try {
         console.log(DOMnickname);
         DOMnickname.style.borderBottom = "2px solid red"
@@ -80,12 +75,10 @@ export default function Board() {
     }
     population.splice(spaces, 0, 16)
     setTiles(_.shuffle(population))
-    // setTiles(population)
-    setMin(0)
-    setSec(0)
-    !playing && toggleHelp()
-    hasWon(false)
-    inSession(true)
+    setTiles(population)
+    setCounter({ ...counter, min: 0, sec: 0 })
+    !components.playing && toggleHelp()
+    setComponents({ ...components, greeting: false, playing: true, victory: false, leaderboard: false })
   }
 
   const checkSurroundings = (i, tile) => {
@@ -166,44 +159,43 @@ export default function Board() {
   }
 
   const endGame = async () => {
-
-    openLeaderboard(true)
-    hasWon(true)
-    inSession(false)
+    setComponents({ ...components, playing: false, victory: true, leaderboard: true })
     const postToLeaderboard = async () => {
       await axios.post(process.env.REACT_APP_PROD_POST_URL, {
-        name: name,
-        time: time,
-        seconds: timeInSeconds(),
-        ip: ip,
-        location: location
+        name: user.name,
+        time: gameTime,
+        seconds: gameTimeInSeconds(),
+        ip: user.ip,
+        location: user.location
       })
         .then(() => {
-          console.log('Entry Sent =>', name, '/', time, '/', timeInSeconds())
+          console.log('Entry Sent =>', user.name, '/', gameTime, '/', gameTimeInSeconds())
           entrySent(true)
           setTiles(_.shuffle(tiles))
         })
         .catch(error => console.log(error))
     }
-    postToLeaderboard(name, time)
+    postToLeaderboard()
   }
 
   const toggleHelp = () => {
-    showHelp(true)
+    // setComponents({ ...components, help: true })
+    setHelp(true)
     setTimeout(() => {
-      showHelp(false)
+      // setComponents({ ...components, help: false })
+      setHelp(false)
     }, 5000)
   }
 
   const toggleLB = () => {
-    openLeaderboard(!leaderboardOpen)
+    setComponents({ ...components, leaderboard: !components.leaderboard })
     entrySent(true)
   }
 
   const setNickname = (e) => {
     let name = e.target.value
     try {
-      setName(name)
+      setUser({ ...user, name: name.replace(/[^a-z]/ig, '').toLowerCase() })
       DOMnickname.style.borderBottom = "2px solid black"
     } catch (error) {
       console.log(error);
@@ -212,47 +204,46 @@ export default function Board() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setClock(new Date().toLocaleTimeString());
-      playing && setSec(sec + 1)
-      if (sec === 59) {
-        setSec(0)
-        setMin(min + 1)
+      setCounter({ ...counter, clock: new Date().toLocaleTimeString() });
+      components.playing && setCounter({ ...counter, sec: counter.sec + 1 })
+      if (counter.sec === 59) {
+        setCounter({ ...counter, min: counter.min + 1, sec: 0 })
       }
     }, 1000);
 
     return () => {
       clearTimeout(timeout);
     }
-  }, [clock, sec, min]);
+  }, [counter.clock, counter.min, counter.sec]);
 
 
   useEffect(() => {
     (async () => {
-      let ip = await publicIp.v4()
-      console.log(ip);
-      setIp(ip)
+      let ipAddress = await publicIp.v4()
       const token = "81d19b8e942ff8"
       const ipinfo = new IPinfo(token)
-      ipinfo.lookupIp(ip).then(response => {
-        setLocation(response.city)
+      ipinfo.lookupIp('ipAddress').then(res => {
+        setUser({
+          ...user, ip: ipAddress, location: res.city
+        })
       })
     })()
   }, [])
 
   return (
     <>
-      <div className="app" style={theTheme.app}>
-        <Navbar darkState={darkState} setDarkState={setDarkState} toggleLB={toggleLB} toggleHelp={toggleHelp} navPop={navPop} navPopOpen={navPopOpen} />
-        {helpShowing && <p id="help" style={theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
-        {(playing && !victory) && <button>{time}</button>}
-        <div className="game" style={theTheme.game}>
-          {leaderboardOpen && <Leaderboard victory={victory} time={`${format(min)}:${format(sec - 1)}`} leaderboardReady={leaderboardReady} />}
-          {!leaderboardOpen && (!playing && !victory) && <Greeting name={name} setNickname={setNickname} />}
-          {!leaderboardOpen && tiles.map((tile, i) => (
+      <div className="app" style={theme.theTheme.app}>
+        <Navbar theme={theme} setTheme={setTheme} components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} />
+        {help && <p id="help" style={theme.theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
+        {(components.playing && !components.victory) && <button>{gameTime}</button>}
+        <div className="game" style={theme.theTheme.game}>
+          {components.leaderboard && <Leaderboard user={user} components={components} gameTime={`${format(counter.min)}:${format(counter.sec - 1)}`} leaderboardReady={leaderboardReady} />}
+          {components.greeting && <Greeting user={user} setNickname={setNickname} />}
+          {tiles.map((tile, i) => (
             <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}><div key={i}>{tile <= 15 ? tile : ''}</div></li>
           ))}
         </div>
-        <button className="cta" onClick={() => startGame()}>{!playing ? 'Start Game' : 'Scramble Tiles'}</button>
+        <button className="cta" onClick={() => startGame()}>{!components.playing ? 'Start Game' : 'Scramble Tiles'}</button>
       </div>
     </>
   );

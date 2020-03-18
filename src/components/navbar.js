@@ -1,25 +1,34 @@
 import React from 'react';
 
-const Navbar = (props) => {
-  const { darkState, setDarkState, toggleHelp, toggleLB, navPopOpen, navPop } = props
+const Navbar = ({ theme, setTheme, components, setComponents, toggleHelp, toggleLB }) => {
   const isMobile = window.innerWidth < 500
+  const setNavPop = () => {
+    setComponents({ ...components, navPop: !components.navPop })
+  }
   return (
     <>
       <div className="navbar">
         <h1>Kyle Caprio</h1>
-        {navPop && <>
+        {components.navPop && <>
           <div className="navpop">
-            <p onClick={() => { toggleHelp(); isMobile && navPopOpen(!navPop) }}>Objective</p>
-            <p onClick={() => { toggleLB(); isMobile && navPopOpen(!navPop) }}>Leaderboards</p>
             <p onClick={() => {
-              setDarkState(!darkState); localStorage.setItem('DA-darkState', !darkState)
+              toggleHelp()
+              isMobile && setNavPop()
+            }}>Objective</p>
+            <p onClick={() => {
+              toggleLB()
+              isMobile && setNavPop()
+            }}>Leaderboards</p>
+            <p onClick={() => {
+              setTheme({ ...theme, darkState: !theme.darkState })
+              localStorage.setItem('DA-darkState', !theme.darkState)
             }}>Theme</p>
           </div>
           <div className="modal-clickout"
-            onTouchStart={() => navPopOpen(!navPop)}>
+            onTouchStart={() => setNavPop()}>
           </div>
         </>}
-        <div className="hamburger" onClick={() => navPopOpen(!navPop)}><p>☰</p></div>
+        <div className="hamburger" onClick={() => setNavPop()}><p>☰</p></div>
 
 
       </div>
