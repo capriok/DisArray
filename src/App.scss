@@ -250,19 +250,14 @@ $tile-dark: rgb(20, 20, 20);
     color: white;
     background-color: $tile-dark;
     border: 1px solid white;
-    .clock{
-      cursor: default;
-      font-size: 40px;
     }
-  }
-  .cta{
-    cursor: pointer;
-  }
+    .cta{
+      cursor: pointer;
+    }
 }
 
 @media (max-width:500px) {
   .app{
-      // padding-top: 50px;
       .navbar{
       overflow: unset;
       h1{
