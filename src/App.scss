@@ -23,6 +23,7 @@
 
 h1, h2, h3, h4, h5, h6{
   font-family: 'Alegreya Sans SC', sans-serif;
+  letter-spacing: 1px;
 }
 p, span{
   font-family: 'roboto', sans-serif;
@@ -32,9 +33,10 @@ body{
   text-align: center;
 }
 
-$app-bg: rgb(150, 150, 150);
-$game-bg: rgb(215, 215, 215);
+$app-bg: rgb(218, 218, 218);
+$game-bg: rgb(205, 205, 205);
 $tile-dark: rgb(20, 20, 20);
+$dark-grey:rgb(17, 17, 17);
 
 .app{
   @include flex;
@@ -48,13 +50,13 @@ $tile-dark: rgb(20, 20, 20);
     position: fixed;
     align-items: center;
     top: 0;
-    height: 50px;
+    height: 55px;
     width: 100%;
     max-height: 55px;
     padding: 0px 20px 0px 20px ;
     box-shadow: 0px 3px 15px -5px black;
     font-family: 'Alegreya Sans SC', sans-serif;
-    background-color: black;
+    background-color: $dark-grey;
     user-select: none;
     overflow: hidden;
     z-index: 500;
@@ -106,7 +108,7 @@ $tile-dark: rgb(20, 20, 20);
     height: 500px;
     padding: 1px;
     background-color: $game-bg;
-    box-shadow: 0px 0px 10px 0px black;
+    box-shadow: 0px 0px 15px 0px black;
     .tile{
       @include flex;
       flex: 20%;
@@ -122,12 +124,12 @@ $tile-dark: rgb(20, 20, 20);
         user-select: none;
         transition: all .1s;
         box-sizing: border-box;
-        border: 3px solid rgb(45, 45, 45);
+        border: 3px solid rgb(30, 30, 30);
         font-family: 'roboto', sans-serif;
         background-color: $tile-dark;
         &:active{
           cursor: grabbing;
-          border: 3px solid rgba(0, 91, 147, 0.5);
+          border: 3px solid rgba(99, 99, 99, .7);
         }
       }
     }

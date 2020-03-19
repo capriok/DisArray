@@ -15,8 +15,8 @@ export default function Board() {
   if (process.env.NODE_ENV !== 'development') console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
   const themeStyles = {
-    app: { backgroundColor: 'rgb(35, 35, 35)', },
-    game: { backgroundColor: 'rgb(200, 200, 200)', },
+    app: { backgroundColor: 'rgb(20, 20, 20)', },
+    // game: { backgroundColor: 'rgb(200, 200, 200)', },
     whiteFont: { color: 'white' },
     invertImage: { filter: 'invert(1)' }
   }
@@ -29,8 +29,8 @@ export default function Board() {
   }, [theme.darkState, trueDarkState])
 
   const [components, setComponents] = useState({
-    greeting: true, playing: false,
-    victory: false, napPop: false, help: false, leaderboard: false
+    greeting: true, playing: false, help: false,
+    victory: false, napPop: false, leaderboard: false
   })
   const [user, setUser] = useState({ name: '', ip: '', location: '' })
   const [counter, setCounter] = useState({ clock: '', min: 0, sec: 0 })
@@ -181,11 +181,14 @@ export default function Board() {
   const toggleHelp = () => {
     // setComponents({ ...components, help: true })
     setHelp(true)
+  }
+
+  useEffect(() => {
     setTimeout(() => {
       // setComponents({ ...components, help: false })
       setHelp(false)
     }, 5000)
-  }
+  }, [components.help])
 
   const toggleLB = () => {
     setComponents({ ...components, leaderboard: !components.leaderboard })
@@ -236,7 +239,7 @@ export default function Board() {
         <Navbar theme={theme} setTheme={setTheme} components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} />
         {help && <p id="help" style={theme.theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
         {(components.playing && !components.victory) && <button>{gameTime}</button>}
-        <div className="game" style={theme.theTheme.game}>
+        <div className="game" /*style={theme.theTheme.game}*/>
           {components.leaderboard && <Leaderboard user={user} components={components} gameTime={`${format(counter.min)}:${format(counter.sec - 1)}`} leaderboardReady={leaderboardReady} />}
           {components.greeting && <Greeting user={user} setNickname={setNickname} />}
           {tiles.map((tile, i) => (
