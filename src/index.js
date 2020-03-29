@@ -225,7 +225,7 @@ export default function Board() {
       let ipAddress = await publicIp.v4()
       const token = "81d19b8e942ff8"
       const ipinfo = new IPinfo(token)
-      ipinfo.lookupIp('108.5.113.96').then(res => {
+      ipinfo.lookupIp(ipAddress).then(res => {
         setUser({
           ...user, ip: ipAddress, location: res.city
         })
