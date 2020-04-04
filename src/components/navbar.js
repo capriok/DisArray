@@ -29,8 +29,6 @@ const Navbar = ({ theme, setTheme, components, setComponents, toggleHelp, toggle
           </div>
         </>}
         <div className="hamburger" onClick={() => setNavPop()}><p>☰</p></div>
-
-
       </div>
     </>
   );

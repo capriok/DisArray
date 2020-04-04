@@ -38,6 +38,30 @@ $game-bg: rgb(205, 205, 205);
 $tile-dark: rgb(20, 20, 20);
 $dark-grey:rgb(17, 17, 17);
 
+.drawer{
+  *{padding: 10px 0px;text-decoration: none; color: inherit}
+  text-align: center;
+  h1:not(:first-child){border-top: 1px solid white;}
+  h1{
+    border-bottom: 1px solid white;
+    padding: 5vh;
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+  p{
+    cursor: pointer;
+    margin: 1px 0;
+    padding: 15px 0;
+    width: 100%;
+    transition: all .3s;
+    &:hover{
+      background-color: rgb(31, 31, 31);
+      transition: all .3s;
+    }
+  }
+}
+
 .app{
   @include flex;
   flex-direction: column;

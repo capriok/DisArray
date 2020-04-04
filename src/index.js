@@ -6,8 +6,10 @@ import './App.scss';
 import './common/confetti.scss'
 import format from './common/format'
 import Leaderboard from './components/leaderboard'
-import Navbar from './components/navbar'
 import Greeting from './components/greeting';
+import SideDrawer from './components/drawer'
+import Navbar from 'godspeed/build/Navbar'
+import NavLink from 'godspeed/build/NavLink'
 const publicIp = require('public-ip');
 const IPinfo = require("node-ipinfo");
 
@@ -30,7 +32,7 @@ export default function Board() {
 
   const [components, setComponents] = useState({
     greeting: true, playing: false, help: false,
-    victory: false, napPop: false, leaderboard: false
+    victory: false, drawer: false, leaderboard: false
   })
   const [user, setUser] = useState({ name: '', ip: '', location: '' })
   const [counter, setCounter] = useState({ clock: '', min: 0, sec: 0 })
@@ -225,7 +227,7 @@ export default function Board() {
       let ipAddress = await publicIp.v4()
       const token = "81d19b8e942ff8"
       const ipinfo = new IPinfo(token)
-      ipinfo.lookupIp('108.5.113.96').then(res => {
+      ipinfo.lookupIp(ipAddress).then(res => {
         setUser({
           ...user, ip: ipAddress, location: res.city
         })
@@ -233,10 +235,17 @@ export default function Board() {
     })()
   }, [])
 
+  const setDrawer = () => {
+    setComponents({ ...components, drawer: !components.drawer })
+  }
   return (
     <>
+      <SideDrawer setDrawer={setDrawer} components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} setTheme={setTheme} theme={theme} />
       <div className="app" style={theme.theTheme.app}>
-        <Navbar theme={theme} setTheme={setTheme} components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} />
+        <Navbar className="nav" title="Kyle Caprio" shadow>
+          <NavLink onClick={() => setDrawer()}><h1>≡</h1></NavLink>
+        </Navbar>
+        {/* <Navbar th]eme={theme} setTheme={setTheme} components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} /> */}
         {help && <p id="help" style={theme.theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
         {(components.playing && !components.victory) && <button>{gameTime}</button>}
         <div className="game" /*style={theme.theTheme.game}*/>
