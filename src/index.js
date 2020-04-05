@@ -7,9 +7,7 @@ import './common/confetti.scss'
 import format from './common/format'
 import Leaderboard from './components/leaderboard'
 import Greeting from './components/greeting';
-import SideDrawer from './components/drawer'
-import Navbar from 'godspeed/build/Navbar'
-import NavLink from 'godspeed/build/NavLink'
+import Navbar from './components/navbar'
 const publicIp = require('public-ip');
 const IPinfo = require("node-ipinfo");
 
@@ -235,17 +233,11 @@ export default function Board() {
     })()
   }, [])
 
-  const setDrawer = () => {
-    setComponents({ ...components, drawer: !components.drawer })
-  }
+
   return (
     <>
-      <SideDrawer setDrawer={setDrawer} components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} setTheme={setTheme} theme={theme} />
       <div className="app" style={theme.theTheme.app}>
-        <Navbar className="nav" title="Kyle Caprio" shadow>
-          <NavLink onClick={() => setDrawer()}><h1>≡</h1></NavLink>
-        </Navbar>
-        {/* <Navbar th]eme={theme} setTheme={setTheme} components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} /> */}
+        <Navbar className="nav" title="Kyle Caprio" to="/" shadow components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} setTheme={setTheme} theme={theme} />
         {help && <p id="help" style={theme.theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
         {(components.playing && !components.victory) && <button>{gameTime}</button>}
         <div className="game" /*style={theme.theTheme.game}*/>
