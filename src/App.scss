@@ -38,7 +38,7 @@ $tile-dark: rgb(20, 20, 20);
 $dark-grey:rgb(17, 17, 17);
 
 .drawer{
-  *{padding: 10px 0px;text-decoration: none; color: inherit}
+  *{padding: 10px 0px; text-decoration: none; color: inherit; font-family: Montserrat;}
   text-align: center;
   h1:not(:first-child){border-top: 1px solid white;}
   h1{
