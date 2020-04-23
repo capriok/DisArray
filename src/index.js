@@ -14,6 +14,7 @@ const IPinfo = require("node-ipinfo");
 export default function Board() {
   if (process.env.NODE_ENV !== 'development') console.log = function () { }
   let DOMnickname = document.getElementById('nickname')
+  const isMobile = window.innerWidth < 500
   const themeStyles = {
     app: { backgroundColor: 'rgb(20, 20, 20)', },
     // game: { backgroundColor: 'rgb(200, 200, 200)', },
@@ -60,6 +61,7 @@ export default function Board() {
   }
 
   const startGame = () => {
+    setComponents(() => ({ ...components, leaderboard: false }))
     if (!user.name) {
       try {
         console.log(DOMnickname);
@@ -78,7 +80,7 @@ export default function Board() {
     // setTiles(population)
     setCounter({ ...counter, min: 0, sec: 0 })
     !components.playing && toggleHelp()
-    setComponents({ ...components, greeting: false, playing: true, victory: false, leaderboard: false })
+    setComponents(() => ({ ...components, greeting: false, playing: true, victory: false, leaderboard: false }))
   }
 
   const checkSurroundings = (i, tile) => {
@@ -179,20 +181,19 @@ export default function Board() {
   }
 
   const toggleHelp = () => {
-    // setComponents({ ...components, help: true })
+    setComponents(() => ({ ...components, drawer: isMobile ? !components.drawer : components.drawer }))
     setHelp(true)
   }
 
   useEffect(() => {
     setTimeout(() => {
-      // setComponents({ ...components, help: false })
       setHelp(false)
     }, 5000)
-  }, [components.help])
+  }, [help])
 
   const toggleLB = () => {
-    setComponents({ ...components, leaderboard: !components.leaderboard })
     entrySent(true)
+    setComponents({ ...components, leaderboard: !components.leaderboard, drawer: isMobile ? !components.drawer : components.drawer })
   }
 
   const setNickname = (e) => {
