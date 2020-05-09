@@ -17,7 +17,6 @@ export default function Board() {
   const isMobile = window.innerWidth < 500
   const themeStyles = {
     app: { backgroundColor: 'rgb(20, 20, 20)', },
-    // game: { backgroundColor: 'rgb(200, 200, 200)', },
     whiteFont: { color: 'white' },
     invertImage: { filter: 'invert(1)' }
   }
@@ -241,7 +240,7 @@ export default function Board() {
         <Navbar className="nav" title="Kyle Caprio" to="/" shadow components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} setTheme={setTheme} theme={theme} />
         {help && <p id="help" style={theme.theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
         {(components.playing && !components.victory) && <button>{gameTime}</button>}
-        <div className="game" /*style={theme.theTheme.game}*/>
+        <div className="game">
           {components.leaderboard && <Leaderboard user={user} components={components} gameTime={`${format(counter.min)}:${format(counter.sec - 1)}`} leaderboardReady={leaderboardReady} />}
           {components.greeting && <Greeting user={user} setNickname={setNickname} />}
           {tiles.map((tile, i) => (
