@@ -10,7 +10,7 @@ export default function Leaderboard({ user, components, gameTime, leaderboardRea
   useEffect(() => {
     const populate = async () => {
       console.log('--Fetching leaderboard entries')
-      await axios.get(process.env.REACT_APP_PROD_GET_URL)
+      await axios.get(process.env.REACT_APP_GET)
         .then(res => {
           res.data.sort((a, b) => a.seconds - b.seconds)
           console.log(res.data)

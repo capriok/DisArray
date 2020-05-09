@@ -163,7 +163,7 @@ export default function Board() {
   const endGame = async () => {
     setComponents({ ...components, playing: false, victory: true, leaderboard: true })
     const postToLeaderboard = async () => {
-      await axios.post(process.env.REACT_APP_PROD_POST_URL, {
+      await axios.post(process.env.REACT_APP_POST, {
         name: user.name,
         time: gameTime,
         seconds: gameTimeInSeconds(),
