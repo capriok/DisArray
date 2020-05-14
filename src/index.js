@@ -237,17 +237,43 @@ export default function Board() {
   return (
     <>
       <div className="app" style={theme.theTheme.app}>
-        <Navbar className="nav" title="Kyle Caprio" to="/" shadow components={components} setComponents={setComponents} toggleHelp={toggleHelp} toggleLB={toggleLB} setTheme={setTheme} theme={theme} />
-        {help && <p id="help" style={theme.theTheme.whiteFont}>Sort the tiles in ascending order to win.</p>}
-        {(components.playing && !components.victory) && <button>{gameTime}</button>}
+        <Navbar
+          className="nav"
+          title="Kyle Caprio"
+          to="/" shadow
+          components={components}
+          setComponents={setComponents}
+          toggleHelp={toggleHelp}
+          toggleLB={toggleLB}
+          setTheme={setTheme}
+          theme={theme} />
+        {help &&
+          <p id="help"
+            style={theme.theTheme.whiteFont}>
+            Sort the tiles in ascending order to win.
+          </p>}
+        {(components.playing && !components.victory) &&
+          <button>{gameTime}</button>
+        }
         <div className="game">
-          {components.leaderboard && <Leaderboard user={user} components={components} gameTime={`${format(counter.min)}:${format(counter.sec - 1)}`} leaderboardReady={leaderboardReady} />}
-          {components.greeting && <Greeting user={user} setNickname={setNickname} />}
+          {components.leaderboard &&
+            <Leaderboard user={user} components={components}
+              gameTime={`${format(counter.min)}:${format(counter.sec - 1)}`}
+              leaderboardReady={leaderboardReady} />
+          }
+          {components.greeting &&
+            <Greeting user={user} setNickname={setNickname} />
+          }
           {tiles.map((tile, i) => (
-            <li className="tile" key={i} onClick={(e) => playerAction(e, i + 1, tile)}><div key={i}>{tile <= 15 ? tile : ''}</div></li>
+            <li className="tile" key={i}
+              onClick={(e) => playerAction(e, i + 1, tile)}>
+              <div key={i}>{tile <= 15 ? tile : ''}</div>
+            </li>
           ))}
         </div>
-        <button className="cta" onClick={() => startGame()}>{!components.playing ? 'Start Game' : 'Scramble Tiles'}</button>
+        <button className="cta"
+          onClick={() => startGame()}>{!components.playing ? 'Start Game' : 'Scramble Tiles'}
+        </button>
       </div>
     </>
   );
